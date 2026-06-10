@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POECE Lab — Escuela Industrial N° 9</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;600;700&display=swap');
@@ -49,7 +47,6 @@
 </head>
 <body class="text-slate-200 min-h-screen flex flex-col justify-between selection:bg-indigo-500/30">
 
-    <!-- Top Navbar -->
     <header class="border-b border-slate-800 bg-[#090c1a] py-4 px-6 sticky top-0 z-40 backdrop-blur-md bg-opacity-90">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-3">
@@ -64,21 +61,17 @@
                 </div>
             </div>
 
-            <!-- Global Actions & Role Selector -->
             <div class="flex flex-wrap items-center gap-3">
-                <!-- Sync status badge -->
                 <div id="sync-status" class="px-2.5 py-1 bg-slate-900 border border-slate-800 text-slate-400 rounded-lg text-[10px] font-mono flex items-center gap-1.5">
                     <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
                     <span>Modo local</span>
                 </div>
 
-                <!-- Session student info -->
                 <div class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
                     <i data-lucide="user" class="w-3.5 h-3.5 text-slate-500"></i>
                     <input type="text" id="student-name" placeholder="Tu Nombre y Apellido" class="bg-transparent text-xs text-slate-200 focus:outline-none w-36 placeholder:text-slate-600" oninput="updateReportName()">
                 </div>
                 
-                <!-- Role Toggle button -->
                 <button onclick="toggleRole()" id="role-toggle-btn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-950 border border-slate-800 text-slate-400 hover:text-slate-200 flex items-center gap-1.5 transition">
                     <i data-lucide="lock" class="w-3.5 h-3.5" id="role-icon"></i>
                     <span id="role-text">Modo Profesor</span>
@@ -87,10 +80,8 @@
         </div>
     </header>
 
-    <!-- Main Workspace -->
     <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
 
-        <!-- Welcome Message -->
         <div class="bg-gradient-to-r from-indigo-950/40 via-slate-900 to-indigo-950/20 border border-indigo-500/10 rounded-2xl p-5 relative overflow-hidden">
             <div class="relative z-10 space-y-2">
                 <h2 class="text-lg font-bold text-indigo-300">¡Bienvenidos al Laboratorio POECE, Grupo A2!</h2>
@@ -103,10 +94,8 @@
             </div>
         </div>
 
-        <!-- Student Area (Visible by default) -->
         <section id="student-workspace" class="space-y-6">
             
-            <!-- Tab Layout navigation -->
             <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800 gap-1.5 max-w-md">
                 <button onclick="setStudentTab('desafios')" id="tab-btn-desafios" class="student-tab-btn flex-1 py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 bg-indigo-600 text-white transition">
                     <i data-lucide="gamepad-2" class="w-3.5 h-3.5"></i>
@@ -118,15 +107,12 @@
                 </button>
             </div>
 
-            <!-- STUDENT TAB 1: DESAFÍOS INTERACTIVOS -->
             <div id="student-desafios-content" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 
-                <!-- Left Column: Challenges menu & prompt -->
                 <div class="lg:col-span-4 space-y-4">
                     <div class="space-y-2">
                         <span class="text-[10px] font-mono text-indigo-400 tracking-wider font-bold uppercase block">Seleccioná un problema</span>
                         
-                        <!-- Challenge 1 Card -->
                         <div onclick="selectChallenge(1)" id="chal-card-1" class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:bg-slate-800/40 cursor-pointer transition border-l-4 border-l-blue-500">
                             <div class="flex items-center justify-between mb-1">
                                 <span class="text-[9px] font-mono font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded uppercase">Condicionales</span>
@@ -135,7 +121,6 @@
                             <h4 class="font-bold text-xs text-slate-200">1. Validador con Alerta</h4>
                         </div>
 
-                        <!-- Challenge 2 Card -->
                         <div onclick="selectChallenge(2)" id="chal-card-2" class="p-3.5 rounded-xl bg-slate-900/30 border border-slate-850 hover:bg-slate-800/40 cursor-pointer transition border-l-4 border-l-transparent">
                             <div class="flex items-center justify-between mb-1">
                                 <span class="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded uppercase">Bucles (while)</span>
@@ -144,7 +129,6 @@
                             <h4 class="font-bold text-xs text-slate-400">2. Alcancía Digital</h4>
                         </div>
 
-                        <!-- Challenge 3 Card -->
                         <div onclick="selectChallenge(3)" id="chal-card-3" class="p-3.5 rounded-xl bg-slate-900/30 border border-slate-850 hover:bg-slate-800/40 cursor-pointer transition border-l-4 border-l-transparent">
                             <div class="flex items-center justify-between mb-1">
                                 <span class="text-[9px] font-mono font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded uppercase">Cálculo Mixto</span>
@@ -154,32 +138,26 @@
                         </div>
                     </div>
 
-                    <!-- Enunciado Display Card -->
                     <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 space-y-3">
                         <span class="text-[10px] font-mono text-slate-400 tracking-wider font-bold uppercase flex items-center gap-1">
                             <i data-lucide="file-text" class="w-3.5 h-3.5 text-indigo-400"></i>
                             Enunciado Oficial
                         </span>
                         <div id="challenge-enunciado-text" class="text-xs text-slate-300 leading-relaxed">
-                            <!-- Injected by JS -->
-                        </div>
+                            </div>
                     </div>
                 </div>
 
-                <!-- Right Column: Interactive POECE Worksheet & Simulation -->
                 <div class="lg:col-span-8 space-y-6">
                     
-                    <!-- POECE Interactive Step Binder -->
                     <div class="glass-card rounded-2xl p-5 space-y-5 shadow-xl border-t border-t-indigo-500/10">
                         
-                        <!-- POECE Circle Selector Header -->
                         <div class="flex items-center justify-between border-b border-slate-800 pb-4">
                             <div class="flex items-center gap-2">
                                 <span class="px-2 py-0.5 bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 rounded text-[10px] font-mono">PASO POR PASO</span>
                                 <h3 class="font-bold text-sm text-slate-200">Guía de Análisis Metodológico</h3>
                             </div>
 
-                            <!-- P-O-E-C-E circles -->
                             <div class="flex gap-2">
                                 <button onclick="setPoeceStep('P')" id="poece-btn-P" class="w-7 h-7 rounded-full font-bold text-xs flex items-center justify-center transition border border-slate-700 bg-slate-900 text-blue-400 poece-active">P</button>
                                 <button onclick="setPoeceStep('O')" id="poece-btn-O" class="w-7 h-7 rounded-full font-bold text-xs flex items-center justify-center transition border border-slate-700 bg-slate-900 text-slate-400">O</button>
@@ -189,25 +167,19 @@
                             </div>
                         </div>
 
-                        <!-- Guide and input section -->
                         <div class="space-y-4">
-                            <!-- Injected Help & Guide Text -->
                             <div class="bg-indigo-500/5 p-3.5 rounded-xl border border-indigo-500/10 space-y-1">
                                 <h4 id="poece-guide-title" class="text-xs font-bold text-indigo-300 flex items-center gap-1">
-                                    <!-- Injected -->
-                                </h4>
+                                    </h4>
                                 <p id="poece-guide-desc" class="text-[11px] text-slate-400 leading-relaxed">
-                                    <!-- Injected -->
-                                </p>
+                                    </p>
                             </div>
 
-                            <!-- Input text-area where student types analysis -->
                             <div class="space-y-1.5">
                                 <label class="text-[10px] font-mono text-slate-400 tracking-wider font-bold uppercase block">Completá tu análisis acá:</label>
                                 <textarea id="poece-student-input" oninput="saveStudentWork()" rows="4" placeholder="Escribí acá tu respuesta o análisis..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition font-sans"></textarea>
                             </div>
 
-                            <!-- Interactive Cloud Save Indicator & Button inside Worksheet -->
                             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-2">
                                 <span class="text-[10px] text-slate-500 font-mono flex items-center gap-1">
                                     <i data-lucide="cloud" class="w-3.5 h-3.5 text-indigo-500/60"></i>
@@ -220,9 +192,7 @@
                         </div>
                     </div>
 
-                    <!-- Live Simulation Widget -->
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-                        <!-- Simulated Controls -->
                         <div class="md:col-span-5 bg-slate-900/80 border border-slate-800 rounded-xl p-4 flex flex-col justify-between space-y-4">
                             <div class="space-y-3">
                                 <span class="text-[10px] font-mono text-emerald-400 tracking-wider font-bold uppercase block flex items-center gap-1">
@@ -230,8 +200,7 @@
                                     Prueba de Escritorio Activa
                                 </span>
                                 <div id="simulator-inputs-container" class="space-y-3">
-                                    <!-- Injected inputs based on active challenge -->
-                                </div>
+                                    </div>
                             </div>
                             <button onclick="runLocalSimulation()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5">
                                 <i data-lucide="play" class="w-3.5 h-3.5"></i>
@@ -239,7 +208,6 @@
                             </button>
                         </div>
 
-                        <!-- Simulated terminal output -->
                         <div class="md:col-span-7 bg-black rounded-xl border border-slate-850 p-3.5 flex flex-col justify-between h-56">
                             <div class="flex items-center justify-between border-b border-slate-900 pb-2 mb-2">
                                 <span class="text-[9px] font-mono text-slate-500">TERMINAL OUTPUT (MOCKUP)</span>
@@ -248,8 +216,7 @@
                                 </button>
                             </div>
                             <div class="flex-grow overflow-y-auto text-xs font-mono terminal-scroll space-y-1.5 pr-1" id="sim-terminal-logs">
-                                <!-- Simulator Logs -->
-                            </div>
+                                </div>
                         </div>
                     </div>
 
@@ -257,7 +224,6 @@
 
             </div>
 
-            <!-- STUDENT TAB 2: MI REPORTE -->
             <div id="student-reporte-content" class="hidden glass-card rounded-2xl p-6 space-y-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
                     <div class="space-y-1">
@@ -269,7 +235,6 @@
                     </div>
 
                     <div class="flex flex-wrap items-center gap-2">
-                        <!-- Extra Cloud Save Trigger inside report tab -->
                         <button onclick="saveProgressToCloud()" class="py-2 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-950/20">
                             <i data-lucide="cloud-upload" class="w-4 h-4"></i>
                             Guardar en la Nube
@@ -281,26 +246,21 @@
                     </div>
                 </div>
 
-                <!-- Report compilation preview -->
                 <div class="bg-slate-950/80 rounded-xl p-5 border border-slate-850 space-y-6 max-h-[500px] overflow-y-auto">
                     <div class="border-b border-slate-900 pb-3">
                         <p class="text-xs text-slate-400">Estudiante: <span id="report-name-lbl" class="font-bold text-indigo-300">Anónimo</span></p>
                         <p class="text-[10px] text-slate-500 font-mono">Curso: 3° 1° (Grupo A2) — Escuela Industrial N° 9</p>
                     </div>
 
-                    <!-- Dynamic Report Content -->
                     <div id="report-preview-box" class="space-y-6 text-xs">
-                        <!-- JS compiles this -->
-                    </div>
+                        </div>
                 </div>
             </div>
 
         </section>
 
-        <!-- Teacher Area (Hidden by default, password locked) -->
         <section id="teacher-workspace" class="hidden space-y-6">
             
-            <!-- Auth Lock Card (No Demo option as requested) -->
             <div id="teacher-auth-card" class="max-w-md mx-auto glass-card rounded-2xl p-6 space-y-4 text-center border-t-2 border-t-indigo-500">
                 <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-full w-12 h-12 mx-auto flex items-center justify-center">
                     <i data-lucide="shield-check" class="w-6 h-6"></i>
@@ -317,10 +277,8 @@
                 </div>
             </div>
 
-            <!-- Authentic Teacher Dashboard (Unlocked) -->
             <div id="teacher-content-panel" class="hidden flex flex-col space-y-6 animate-fadeIn">
                 
-                <!-- Tab Menu for Teacher Dashboard -->
                 <div class="flex bg-slate-950 p-1.5 rounded-xl border border-slate-850 gap-2 max-w-lg">
                     <button onclick="setTeacherTab('soluciones')" id="t-tab-btn-soluciones" class="t-tab-btn flex-1 py-2 px-3 rounded-lg text-xs font-bold transition bg-indigo-600 text-white">
                         <i data-lucide="book-open" class="w-3.5 h-3.5 inline mr-1"></i> Solucionarios de Referencia
@@ -330,7 +288,6 @@
                     </button>
                 </div>
 
-                <!-- TEACHER TAB 1: SOLUCIONARIOS -->
                 <div id="t-content-soluciones" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     <div class="lg:col-span-4 space-y-4">
                         <div class="bg-indigo-950/30 border border-indigo-500/15 rounded-xl p-5 space-y-3">
@@ -360,7 +317,6 @@
                             </div>
                         </div>
 
-                        <!-- Code Solution Container -->
                         <div class="space-y-3">
                             <div class="flex justify-between items-center text-xs">
                                 <span id="sol-title" class="font-bold text-slate-200">Solución Desafío 1: Validador de Notas con Alerta</span>
@@ -375,9 +331,7 @@
                     </div>
                 </div>
 
-                <!-- TEACHER TAB 2: LIVE ALUMNI MONITOR -->
                 <div id="t-content-monitoreo" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <!-- Students list panel -->
                     <div class="lg:col-span-4 bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex flex-col justify-between min-h-[480px]">
                         <div class="space-y-4">
                             <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
@@ -385,7 +339,6 @@
                                 <span class="px-1.5 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-[9px] text-indigo-400 font-mono" id="connected-count-sub">0 alumnos</span>
                             </div>
                             <div class="space-y-1.5 max-h-[360px] overflow-y-auto pr-1" id="teacher-students-list">
-                                <!-- Populated dynamically by JS -->
                                 <p class="text-[11px] text-slate-600 italic text-center py-8">Esperando respuestas de los alumnos...</p>
                             </div>
                         </div>
@@ -395,7 +348,6 @@
                         </div>
                     </div>
 
-                    <!-- Selected Student Analysis viewer -->
                     <div class="lg:col-span-8 bg-slate-900/40 border border-slate-800 rounded-xl p-5 space-y-4">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-800 pb-3">
                             <div>
@@ -403,7 +355,6 @@
                                 <p class="text-[10px] text-slate-500 font-mono" id="monitored-student-sub">ID: Ninguno seleccionado</p>
                             </div>
                             
-                            <!-- Challenge Selector for monitored view -->
                             <select id="monitored-challenge-selector" onchange="selectMonitoredChallenge()" class="bg-slate-950 border border-slate-800 text-[10px] rounded-lg px-2 py-1.5 text-slate-300 focus:outline-none focus:border-indigo-500 font-mono">
                                 <option value="1">Desafío 1: Validador de Notas</option>
                                 <option value="2">Desafío 2: Alcancía Digital</option>
@@ -411,18 +362,14 @@
                             </select>
                         </div>
 
-                        <!-- Big grid of student POECE answers -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="monitored-details-grid">
-                            <!-- Injected dynamically -->
                             <div class="md:col-span-2 text-center py-16 text-slate-600 italic text-xs">
                                 Seleccioná un estudiante del panel lateral para cargar la información.
                             </div>
                         </div>
 
-                        <!-- Copy student answers block option -->
                         <div class="pt-3 border-t border-slate-800 flex justify-end" id="monitored-actions-row">
-                            <!-- Injected dynamically when student loaded -->
-                        </div>
+                            </div>
                     </div>
                 </div>
 
@@ -432,7 +379,6 @@
 
     </main>
 
-    <!-- Footer -->
     <footer class="border-t border-slate-900 bg-[#04050a] py-6 px-6 text-center text-[10px] text-slate-600 mt-12">
         <div class="max-w-7xl mx-auto space-y-1">
             <p class="font-semibold text-slate-500">Escuela Industrial N° 9 — El Calafate, Santa Cruz, Argentina</p>
@@ -440,18 +386,30 @@
         </div>
     </footer>
 
-    <!-- Firebase & JS Modules Program logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // -------------------------------------------------------------------------
+        // CONFIGURACIÓN DE TU PROPIA BASE DE DATOS DE FIREBASE (Para GitHub Pages)
+        // -------------------------------------------------------------------------
+        const miConfiguracionFirebase = {
+            apiKey: "AIzaSyB3oeQ47QKMQxyCH8QCJi3vq5gDCb6u3l0",
+            authDomain: "poecea2.firebaseapp.com",
+            projectId: "poecea2",
+            storageBucket: "poecea2.firebasestorage.app",
+            messagingSenderId: "1020736021232",
+            appId: "1:1020736021232:web:0cd1bbf70d41c767181835"
+        };
+        // -------------------------------------------------------------------------
 
         // Global state references
         let db = null;
         let auth = null;
         let isFirebaseConnected = false;
         
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'poece-lab-a2';
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
         const firebaseConfigRaw = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
 
@@ -529,15 +487,15 @@
 
         // Setup Firebase dynamically
         const initFirebase = async () => {
-            if (firebaseConfigRaw) {
+            const firebaseConfigObj = miConfiguracionFirebase || (firebaseConfigRaw ? JSON.parse(firebaseConfigRaw) : null);
+
+            if (firebaseConfigObj) {
                 try {
-                    const firebaseConfig = JSON.parse(firebaseConfigRaw);
-                    const app = initializeApp(firebaseConfig);
+                    const app = initializeApp(firebaseConfigObj);
                     auth = getAuth(app);
                     db = getFirestore(app);
 
-                    // Authentication protocol (RULE 3)
-                    if (initialAuthToken) {
+                    if (initialAuthToken && !miConfiguracionFirebase) {
                         await signInWithCustomToken(auth, initialAuthToken);
                     } else {
                         await signInAnonymously(auth);
@@ -569,17 +527,14 @@
         const useOfflineFallback = () => {
             isFirebaseConnected = false;
             updateSyncBadge(false);
-            // Ingest mock student database to easily show functionality
             syncedStudentsMap = { ...mockAlumniData };
             updateConnectedCount();
             renderStudentsList();
         };
 
-        // Real-Time database sync listeners (Professors monitoring dashboard)
         const setupRealTimeListeners = () => {
             if (!db || !isFirebaseConnected) return;
 
-            // Strict collection path rule 1 applied
             const collectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'respuestas_alumnos');
             
             onSnapshot(collectionRef, (snapshot) => {
@@ -589,7 +544,6 @@
                     syncedStudentsMap[doc.id] = data;
                 });
                 
-                // Add offline mocks anyway so list is never empty during demo testing
                 Object.keys(mockAlumniData).forEach(mId => {
                     if (!syncedStudentsMap[mId]) {
                         syncedStudentsMap[mId] = mockAlumniData[mId];
@@ -599,7 +553,6 @@
                 updateConnectedCount();
                 renderStudentsList();
 
-                // If currently inspecting a student, refresh their details in the monitor panel
                 if (selectedMonitoredStudentId) {
                     loadSelectedStudentDetails(selectedMonitoredStudentId);
                 }
@@ -616,7 +569,6 @@
             if (subElement) subElement.innerText = `${count} alumnos`;
         };
 
-        // Student Save trigger to Firestore (Cloud sync)
         const saveProgressToCloud = async () => {
             const studentName = document.getElementById('student-name').value.trim();
             if (!studentName) {
@@ -624,11 +576,9 @@
                 return;
             }
 
-            // Lock UI button visually during sync
             showNotification("info", "Sincronizando respuestas...");
 
             if (!isFirebaseConnected) {
-                // If offline, save into simulated memory pool
                 const simId = "student-local-offline";
                 syncedStudentsMap[simId] = {
                     uid: simId,
@@ -643,7 +593,6 @@
                 return;
             }
 
-            // Real Firestore transaction
             try {
                 const uid = auth.currentUser ? auth.currentUser.uid : 'anonymous-session';
                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'respuestas_alumnos', uid);
@@ -662,7 +611,6 @@
             }
         };
 
-        // Interactive Student State Save Handler
         const saveStudentWork = () => {
             const txtValue = document.getElementById('poece-student-input').value;
             studentWork[currentChallengeIdx][currentPoeceStep] = txtValue;
@@ -673,7 +621,6 @@
             document.getElementById('poece-student-input').value = studentWork[currentChallengeIdx][currentPoeceStep] || "";
         };
 
-        // Switch student challenges
         const selectChallenge = (idx) => {
             currentChallengeIdx = idx;
 
@@ -728,7 +675,6 @@
             document.getElementById('poece-student-input').value = studentWork[currentChallengeIdx][stepKey] || "";
         };
 
-        // Student layout switcher
         const setStudentTab = (tab) => {
             currentStudentTab = tab;
             document.querySelectorAll('.student-tab-btn').forEach(btn => {
@@ -828,7 +774,6 @@
             document.body.removeChild(link);
         };
 
-        // Terminal & simulation logs
         const clearSimTerminal = () => {
             document.getElementById('sim-terminal-logs').innerHTML = "";
         };
@@ -861,7 +806,7 @@
                 const prom = (n1 + n2 + n3) / 3;
                 addSimLog(`[PROCESO] Calculando promedio: (${n1} + ${n2} + ${n3}) / 3 = ${prom.toFixed(2)}`);
                 
-                addSimLog(`\nPromedio final: {prom.toFixed(2)}`, "text-emerald-400 font-bold");
+                addSimLog(`\nPromedio final: ${prom.toFixed(2)}`, "text-emerald-400 font-bold");
 
                 const tieneAplazo = n1 < 4 || n2 < 4 || n3 < 4;
                 if (tieneAplazo) {
@@ -946,7 +891,6 @@
             }
         };
 
-        // Role controllers
         const toggleRole = () => {
             if (currentRole === 'student') {
                 document.getElementById('student-workspace').classList.add('hidden');
@@ -1014,7 +958,6 @@
             showNotification("success", "Solución copiada al portapapeles.");
         };
 
-        // Teacher dashboard tabswitcher
         const setTeacherTab = (tab) => {
             currentTeacherTab = tab;
             document.querySelectorAll('.t-tab-btn').forEach(btn => {
@@ -1035,7 +978,6 @@
             lucide.createIcons();
         };
 
-        // Render real-time active student list
         const renderStudentsList = () => {
             const listContainer = document.getElementById('teacher-students-list');
             if (!listContainer) return;
@@ -1051,7 +993,6 @@
             keys.forEach(uid => {
                 const student = syncedStudentsMap[uid];
                 
-                // Count challenges that have at least some answers filled
                 let answeredCount = 0;
                 for (let cId = 1; cId <= 3; cId++) {
                     const ans = student.answers[cId];
@@ -1079,10 +1020,9 @@
             });
         };
 
-        // Load targeted student POECE worksheet
         const loadSelectedStudentDetails = (uid) => {
             selectedMonitoredStudentId = uid;
-            renderStudentsList(); // Re-render to update active indicator
+            renderStudentsList();
 
             const student = syncedStudentsMap[uid];
             if (!student) return;
@@ -1090,7 +1030,6 @@
             document.getElementById('monitored-student-title').innerText = student.name || "Sin nombre";
             document.getElementById('monitored-student-sub').innerText = `ID de sesión: ${uid}`;
 
-            // Trigger POECE grid populate
             selectMonitoredChallenge();
         };
 
@@ -1142,7 +1081,6 @@
                 </div>
             `;
 
-            // Action row setup to copy student summary
             actionRow.innerHTML = `
                 <button onclick="copyMonitoredReport()" class="py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition">
                     <i data-lucide="copy" class="w-3.5 h-3.5"></i>
@@ -1183,7 +1121,6 @@
             showNotification("success", "¡Reporte consolidado del alumno copiado al portapapeles!");
         };
 
-        // Utility interactive notification bubble
         const showNotification = (type, message) => {
             const notif = document.createElement('div');
             const bgClass = type === 'error' ? 'bg-red-950 border-red-500/30 text-red-200' : 'bg-slate-900 border-slate-700 text-slate-200';
@@ -1199,7 +1136,6 @@
             setTimeout(() => { notif.remove(); }, 2500);
         };
 
-        // Global Module API bindings to raw window context so inline buttons don't throw ReferenceErrors
         window.toggleRole = toggleRole;
         window.checkTeacherAuth = checkTeacherAuth;
         window.setPoeceStep = setPoeceStep;
@@ -1220,7 +1156,6 @@
         window.loadSelectedStudentDetails = loadSelectedStudentDetails;
         window.copyMonitoredReport = copyMonitoredReport;
 
-        // Initialize Firebase
         initFirebase();
 
     </script>
