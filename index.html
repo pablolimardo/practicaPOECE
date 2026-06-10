@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POECE Lab — Escuela Industrial N° 9</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;600;700&display=swap');
@@ -47,6 +49,7 @@
 </head>
 <body class="text-slate-200 min-h-screen flex flex-col justify-between selection:bg-indigo-500/30">
 
+    <!-- Top Navbar -->
     <header class="border-b border-slate-800 bg-[#090c1a] py-4 px-6 sticky top-0 z-40 backdrop-blur-md bg-opacity-90">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-3">
@@ -62,16 +65,19 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-3">
+                <!-- Sync status badge -->
                 <div id="sync-status" class="px-2.5 py-1 bg-slate-900 border border-slate-800 text-slate-400 rounded-lg text-[10px] font-mono flex items-center gap-1.5">
                     <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
                     <span>Modo local</span>
                 </div>
 
+                <!-- Session student info -->
                 <div class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
                     <i data-lucide="user" class="w-3.5 h-3.5 text-slate-500"></i>
                     <input type="text" id="student-name" placeholder="Tu Nombre y Apellido" class="bg-transparent text-xs text-slate-200 focus:outline-none w-36 placeholder:text-slate-600" oninput="updateReportName()">
                 </div>
                 
+                <!-- Role Toggle button -->
                 <button onclick="toggleRole()" id="role-toggle-btn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-950 border border-slate-800 text-slate-400 hover:text-slate-200 flex items-center gap-1.5 transition">
                     <i data-lucide="lock" class="w-3.5 h-3.5" id="role-icon"></i>
                     <span id="role-text">Modo Profesor</span>
@@ -82,6 +88,7 @@
 
     <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
 
+        <!-- Welcome Message -->
         <div class="bg-gradient-to-r from-indigo-950/40 via-slate-900 to-indigo-950/20 border border-indigo-500/10 rounded-2xl p-5 relative overflow-hidden">
             <div class="relative z-10 space-y-2">
                 <h2 class="text-lg font-bold text-indigo-300">¡Bienvenidos al Laboratorio POECE, Grupo A2!</h2>
@@ -94,6 +101,7 @@
             </div>
         </div>
 
+        <!-- Student Workspace -->
         <section id="student-workspace" class="space-y-6">
             
             <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800 gap-1.5 max-w-md">
@@ -144,7 +152,7 @@
                             Enunciado Oficial
                         </span>
                         <div id="challenge-enunciado-text" class="text-xs text-slate-300 leading-relaxed">
-                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -170,9 +178,9 @@
                         <div class="space-y-4">
                             <div class="bg-indigo-500/5 p-3.5 rounded-xl border border-indigo-500/10 space-y-1">
                                 <h4 id="poece-guide-title" class="text-xs font-bold text-indigo-300 flex items-center gap-1">
-                                    </h4>
+                                </h4>
                                 <p id="poece-guide-desc" class="text-[11px] text-slate-400 leading-relaxed">
-                                    </p>
+                                </p>
                             </div>
 
                             <div class="space-y-1.5">
@@ -200,7 +208,7 @@
                                     Prueba de Escritorio Activa
                                 </span>
                                 <div id="simulator-inputs-container" class="space-y-3">
-                                    </div>
+                                </div>
                             </div>
                             <button onclick="runLocalSimulation()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5">
                                 <i data-lucide="play" class="w-3.5 h-3.5"></i>
@@ -216,7 +224,7 @@
                                 </button>
                             </div>
                             <div class="flex-grow overflow-y-auto text-xs font-mono terminal-scroll space-y-1.5 pr-1" id="sim-terminal-logs">
-                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -253,7 +261,7 @@
                     </div>
 
                     <div id="report-preview-box" class="space-y-6 text-xs">
-                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -369,7 +377,7 @@
                         </div>
 
                         <div class="pt-3 border-t border-slate-800 flex justify-end" id="monitored-actions-row">
-                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -403,6 +411,181 @@
             appId: "1:1020736021232:web:0cd1bbf70d41c767181835"
         };
         // -------------------------------------------------------------------------
+
+        // Base de Datos de los Desafíos para los Estudiantes
+        const challenges = {
+            1: {
+                title: "1. Validador de Notas con Alerta",
+                enunciado: `Escribí un programa que le pida al usuario <strong>3 notas de exámenes</strong>. El sistema tiene que calcular y mostrar el promedio matemático.<br><br>Sin embargo, hay una regla estricta: si <strong>al menos una de las notas es menor a 4</strong>, el programa tiene que mostrar un mensaje de advertencia diciendo: <em>"¡Alerta! Tenés un aplazo pendiente de aprobación"</em>, además de mostrar el promedio final.`,
+                poeceGuide: {
+                    P: {
+                        title: "1. Problema (Análisis inicial)",
+                        desc: "¿Qué variables numéricas vamos a solicitar? ¿Qué notas se consideran aplazos y cómo influyen en el promedio?"
+                    },
+                    O: {
+                        title: "2. Objetivo",
+                        desc: "Definí en un renglón cuál es la meta del programa. ¿Qué tiene que imprimir como resultado?"
+                    },
+                    E: {
+                        title: "3. Estrategia (Algoritmo)",
+                        desc: "Planteá la lógica. ¿Qué operadores condicionales necesitamos para saber si la nota 1, la nota 2 o la nota 3 tienen un aplazo?"
+                    },
+                    C: {
+                        title: "4. Código (Pistas)",
+                        desc: "Pista: Pensá en variables float para permitir decimales. La condición va a requerir la palabra clave 'or'."
+                    },
+                    E2: {
+                        title: "5. Evaluación (Prueba de Escritorio)",
+                        desc: "Calculá a mano el promedio esperado para tres notas aleatorias (por ejemplo: 7, 3 y 8) y verificá si debería disparar la advertencia."
+                    }
+                },
+                inputsHTML: `
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">Nota del examen 1</label>
+                        <input type="number" id="sim-c1-n1" value="7" min="1" max="10" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">Nota del examen 2</label>
+                        <input type="number" id="sim-c1-n2" value="3.5" min="1" max="10" step="0.5" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">Nota del examen 3</label>
+                        <input type="number" id="sim-c1-n3" value="8" min="1" max="10" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-mono">
+                    </div>
+                `,
+                solCode: `print("--- Validador de Notas Escolares ---")
+
+# Entrada de datos (permitiendo números reales)
+nota1 = float(input("Ingresá la nota del primer examen: "))
+nota2 = float(input("Ingresá la nota del segundo examen: "))
+nota3 = float(input("Ingresá la nota del tercer examen: "))
+
+# Cálculo matemático del promedio
+promedio = (nota1 + nota2 + nota3) / 3
+
+# Mostramos siempre el promedio final
+print(f"Promedio final: {promedio:.2f}")
+
+# Estructura de Selección para detectar el aplazo (Menor a 4)
+if nota1 < 4 or nota2 < 4 or nota3 < 4:
+    print("⚠️ ¡Alerta! Tenés un aplazo pendiente de aprobación.")
+else:
+    print("✅ Todas las materias tienen notas de aprobación base.")`
+            },
+            2: {
+                title: "2. La Alcancía Digital",
+                enunciado: `Queremos diseñar un simulador de ahorro interactivo. El usuario va a ingresar una <strong>meta de ahorro</strong> en pesos (por ejemplo, $5000).<br><br>A partir de ahí, el programa le tiene que pedir de forma repetitiva que ingrese los montos que va ahorrando mes a mes. El programa tiene que dejar de pedir datos únicamente cuando la suma de los ahorros alcance o supere la meta establecida. Al final, debe mostrar cuántos meses tardó en juntar la plata y con cuánto saldo a favor quedó.`,
+                poeceGuide: {
+                    P: {
+                        title: "1. Problema (Análisis inicial)",
+                        desc: "¿Qué datos se ingresan al inicio? ¿Cuál es la variable que va a sumar mes a mes y de qué tipo es?"
+                    },
+                    O: {
+                        title: "2. Objetivo",
+                        desc: "Escribí el objetivo. Lograr que el programa pida montos repetidamente hasta cruzar la meta establecida."
+                    },
+                    E: {
+                        title: "3. Estrategia (Algoritmo)",
+                        desc: "Pensá en las variables acumuladoras y contadoras necesarias. ¿Por qué usamos un bucle 'while' y no un 'for' en este caso?"
+                    },
+                    C: {
+                        title: "4. Código (Pistas)",
+                        desc: "Recordá inicializar las variables acumuladoras antes de entrar al bucle. Por ejemplo, total_ahorrado = 0."
+                    },
+                    E2: {
+                        title: "5. Evaluación (Prueba de Escritorio)",
+                        desc: "Si la meta es de $1000, ingresamos $300, luego $500 y finalmente $400. ¿Cuántos meses tardó y cuánto sobró?"
+                    }
+                },
+                inputsHTML: `
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">Establecer Meta de Ahorro ($)</label>
+                        <input type="number" id="sim-c2-meta" value="1000" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-mono" onchange="resetSavingsSim()">
+                    </div>
+                    <div class="h-px bg-slate-800 my-2"></div>
+                    <div class="flex gap-2 items-end">
+                        <div class="flex-grow">
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Monto a Depositar hoy</label>
+                            <input type="number" id="sim-c2-dep" value="300" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-mono">
+                        </div>
+                        <button onclick="depositAhorroSim()" class="py-1.5 px-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold font-sans">Depositar</button>
+                    </div>
+                `,
+                solCode: `print("--- Simulador de Ahorro Mensual ---")
+
+# Entrada del objetivo
+meta = float(input("¿Cuál es tu meta de ahorro en pesos?: $"))
+
+total_ahorrado = 0.0
+meses = 0
+
+# Bucle interactivo iterativo controlado por condición
+while total_ahorrado < meta:
+    meses += 1
+    deposito = float(input(f"Ingresá el ahorro del mes N° {meses}: $"))
+    total_ahorrado += deposito
+    print(f"-> Acumulado hasta el momento: \\\${total_ahorrado:.2f} de \\\${meta:.2f}")
+
+# Excedente o vuelto final
+saldo_favor = total_ahorrado - meta
+print("\\\\n¡Excelente! Cumpliste con tu meta.")
+print(f"Tardaste {meses} meses en juntar el dinero.")
+print(f"Te sobraron: \\\${saldo_favor:.2f}")`
+            },
+            3: {
+                title: "3. Tarifador de Estacionamiento",
+                enunciado: `En un estacionamiento céntrico quieren automatizar el cobro de la estadía por horas. La tarifa se calcula de la siguiente manera:<br>
+                • Las primeras <strong>2 horas</strong> cuestan <strong>$500 por hora</strong>.<br>
+                • A partir de la <strong>tercera hora</strong>, cada hora adicional cuesta <strong>$300 por hora</strong>.<br><br>
+                Escribí un programa donde se ingrese la cantidad de horas enteras que un vehículo estuvo estacionado y devuelva el total exacto a pagar.`,
+                poeceGuide: {
+                    P: {
+                        title: "1. Problema (Análisis inicial)",
+                        desc: "¿Cómo dividimos las tarifas? ¿Qué pasa con los vehículos que se quedan menos de 2 horas versus los que se quedan más?"
+                    },
+                    O: {
+                        title: "2. Objetivo",
+                        desc: "Imprimir el ticket detallando las horas de estadía y el cálculo diferenciado de la tarifa."
+                    },
+                    E: {
+                        title: "3. Estrategia (Algoritmo)",
+                        desc: "Pensá en un bucle condicional 'if' para decidir si las horas totales superan la barrera de 2 o no."
+                    },
+                    C: {
+                        title: "4. Código (Pistas)",
+                        desc: "Para el cálculo adicional, restá 2 al total de horas. Ejemplo: horas_extras = horas - 2."
+                    },
+                    E2: {
+                        title: "5. Evaluación (Prueba de Escritorio)",
+                        desc: "Calculá a mano el valor para: 1 hora ($500), 2 horas ($1000) y 5 horas ($1900)."
+                    }
+                },
+                inputsHTML: `
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">Horas de Estacionamiento</label>
+                        <input type="number" id="sim-c3-horas" value="5" min="1" max="24" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-mono">
+                    </div>
+                `,
+                solCode: `print("--- System de Tarifas de Estacionamiento ---")
+
+# Ingreso de datos de horas como enteros
+horas = int(input("Ingresá la cantidad de horas que estuvo estacionado: "))
+
+# Estructura de Selección para diferenciar las tarifas
+if horas <= 2:
+    total_pagar = horas * 500
+else:
+    # Las primeras 2 horas se cobran a $500 (total $1000)
+    # Las siguientes horas se cobran a $300 por cada una
+    horas_adicionales = horas - 2
+    total_pagar = 1000 + (horas_adicionales * 300)
+
+print("\\\\n---------- TICKET DE PAGO ----------")
+print(f"Estadía total registrada: {horas} horas.")
+print(f"Monto neto total a pagar: \\\${total_pagar}")
+print("------------------------------------")`
+            }
+        };
 
         // Global state references
         let db = null;
