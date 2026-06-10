@@ -280,7 +280,7 @@
 
                 <div class="space-y-3">
                     <input type="password" id="teacher-pass" placeholder="Contraseña de Profesor" class="w-full text-center bg-slate-950 border border-slate-800 rounded-xl py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 font-mono" onkeydown="if(event.key === 'Enter') checkTeacherAuth()">
-                    <button onclick="checkTeacherAuth()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition">Desbloquear Panel</button>
+                    <button onclick="checkTeacherAuth()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition font-sans">Desbloquear Panel</button>
                     <p class="text-[9px] font-mono text-slate-600">Tip de clase: La clave del taller es <code class="bg-slate-950 px-1 py-0.5 rounded text-indigo-400 font-bold">PROFE-A2</code></p>
                 </div>
             </div>
@@ -319,9 +319,9 @@
                         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                             <span class="text-xs font-mono text-slate-400">SOLUCIONARIO GENERAL PARA LA CLASE</span>
                             <div class="flex gap-2">
-                                <button onclick="selectTeacherSol(1)" id="t-sol-btn-1" class="px-2.5 py-1 text-[10px] font-bold bg-indigo-600 rounded text-white transition">Desafío 1</button>
-                                <button onclick="selectTeacherSol(2)" id="t-sol-btn-2" class="px-2.5 py-1 text-[10px] font-bold bg-slate-800 rounded text-slate-400 transition">Desafío 2</button>
-                                <button onclick="selectTeacherSol(3)" id="t-sol-btn-3" class="px-2.5 py-1 text-[10px] font-bold bg-slate-800 rounded text-slate-400 transition">Desafío 3</button>
+                                <button onclick="selectTeacherSol(1)" id="t-sol-btn-1" class="px-2.5 py-1 text-[10px] font-bold bg-indigo-600 rounded text-white transition font-sans">Desafío 1</button>
+                                <button onclick="selectTeacherSol(2)" id="t-sol-btn-2" class="px-2.5 py-1 text-[10px] font-bold bg-slate-800 rounded text-slate-400 transition font-sans hover:text-slate-250">Desafío 2</button>
+                                <button onclick="selectTeacherSol(3)" id="t-sol-btn-3" class="px-2.5 py-1 text-[10px] font-bold bg-slate-800 rounded text-slate-400 transition font-sans hover:text-slate-250">Desafío 3</button>
                             </div>
                         </div>
 
@@ -524,13 +524,13 @@ while total_ahorrado < meta:
     meses += 1
     deposito = float(input(f"Ingresá el ahorro del mes N° {meses}: $"))
     total_ahorrado += deposito
-    print(f"-> Acumulado hasta el momento: \\\${total_ahorrado:.2f} de \\\${meta:.2f}")
+    print(f"-> Acumulado hasta el momento: \${total_ahorrado:.2f} de \${meta:.2f}")
 
 # Excedente o vuelto final
 saldo_favor = total_ahorrado - meta
 print("\\\\n¡Excelente! Cumpliste con tu meta.")
 print(f"Tardaste {meses} meses en juntar el dinero.")
-print(f"Te sobraron: \\\${saldo_favor:.2f}")`
+print(f"Te sobraron: \${saldo_favor:.2f}")`
             },
             3: {
                 title: "3. Tarifador de Estacionamiento",
@@ -582,7 +582,7 @@ else:
 
 print("\\\\n---------- TICKET DE PAGO ----------")
 print(f"Estadía total registrada: {horas} horas.")
-print(f"Monto neto total a pagar: \\\${total_pagar}")
+print(f"Monto neto total a pagar: \${total_pagar}")
 print("------------------------------------")`
             }
         };
