@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POECE Lab — Escuela Industrial N° 9</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #060813;
+        }
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .glass-card {
+            background: rgba(13, 17, 33, 0.75);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glow-blue {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
+        }
+        /* Active states for POECE circle navigation */
+        .poece-active {
+            transform: scale(1.15);
+            box-shadow: 0 0 12px currentColor;
+        }
+        /* Custom terminal scrollbar */
+        .terminal-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+        .terminal-scroll::-webkit-scrollbar-track {
+            background: #000;
+        }
+        .terminal-scroll::-webkit-scrollbar-thumb {
+            background: #222;
+            border-radius: 3px;
+        }
+        .terminal-scroll::-webkit-scrollbar-thumb:hover {
+            background: #10b981;
+        }
+    </style>
+</head>
+<body class="text-slate-200 min-h-screen flex flex-col justify-between selection:bg-indigo-500/30">
+
+    <!-- Top Navbar -->
+    <header class="border-b border-slate-800 bg-[#090c1a] py-4 px-6 sticky top-0 z-40 backdrop-blur-md bg-opacity-90">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-gradient-to-br from-indigo-500/20 to-blue-500/10 text-indigo-400 rounded-xl border border-indigo-500/25">
+                    <i data-lucide="layers" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                        POECE Lab <span class="text-xs text-slate-500 font-normal">v1.3</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Algoritmos y Programación — 3° 1° (Grupo A2)</p>
+                </div>
+            </div>
+
+            <!-- Global Actions & Role Selector -->
+            <div class="flex flex-wrap items-center gap-3">
+                <!-- Sync status badge -->
+                <div id="sync-status" class="px-2.5 py-1 bg-slate-900 border border-slate-800 text-slate-400 rounded-lg text-[10px] font-mono flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+                    <span>Modo local</span>
+                </div>
+
+                <!-- Session student info -->
+                <div class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-2">
+                    <i data-lucide="user" class="w-3.5 h-3.5 text-slate-500"></i>
+                    <input type="text" id="student-name" placeholder="Tu Nombre y Apellido" class="bg-transparent text-xs text-slate-200 focus:outline-none w-36 placeholder:text-slate-600" oninput="updateReportName()">
+                </div>
+                
+                <!-- Role Toggle button -->
+                <button onclick="toggleRole()" id="role-toggle-btn" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-950 border border-slate-800 text-slate-400 hover:text-slate-200 flex items-center gap-1.5 transition">
+                    <i data-lucide="lock" class="w-3.5 h-3.5" id="role-icon"></i>
+                    <span id="role-text">Modo Profesor</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
+
+        <!-- Welcome Message -->
+        <div class="bg-gradient-to-r from-indigo-950/40 via-slate-900 to-indigo-950/20 border border-indigo-500/10 rounded-2xl p-5 relative overflow-hidden">
+            <div class="relative z-10 space-y-2">
+                <h2 class="text-lg font-bold text-indigo-300">¡Bienvenidos al Laboratorio POECE, Grupo A2!</h2>
+                <p class="text-slate-300 text-xs md:text-sm max-w-4xl leading-relaxed">
+                    Resolver un problema de programación es como armar un motor: primero se analizan las piezas, se planifica el armado, y recién al final se ajustan los tornillos. Usá las herramientas de abajo para cada desafío, completá tus carpetas y probá la lógica con los simuladores en tiempo real.
+                </p>
+            </div>
+            <div class="absolute -right-8 -bottom-8 opacity-5 text-indigo-400 pointer-events-none">
+                <i data-lucide="terminal" class="w-48 h-48"></i>
+            </div>
+        </div>
+
+        <!-- Student Area (Visible by default) -->
+        <section id="student-workspace" class="space-y-6">
+            
+            <!-- Tab Layout navigation -->
+            <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800 gap-1.5 max-w-md">
+                <button onclick="setStudentTab('desafios')" id="tab-btn-desafios" class="student-tab-btn flex-1 py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 bg-indigo-600 text-white transition">
+                    <i data-lucide="gamepad-2" class="w-3.5 h-3.5"></i>
+                    Desafíos Interactivos
+                </button>
+                <button onclick="setStudentTab('reporte')" id="tab-btn-reporte" class="student-tab-btn flex-1 py-2 px-3 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 transition">
+                    <i data-lucide="clipboard-list" class="w-3.5 h-3.5"></i>
+                    Mi Reporte de Clase
+                </button>
+            </div>
+
+            <!-- STUDENT TAB 1: DESAFÍOS INTERACTIVOS -->
+            <div id="student-desafios-content" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Left Column: Challenges menu & prompt -->
+                <div class="lg:col-span-4 space-y-4">
+                    <div class="space-y-2">
+                        <span class="text-[10px] font-mono text-indigo-400 tracking-wider font-bold uppercase block">Seleccioná un problema</span>
+                        
+                        <!-- Challenge 1 Card -->
+                        <div onclick="selectChallenge(1)" id="chal-card-1" class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:bg-slate-800/40 cursor-pointer transition border-l-4 border-l-blue-500">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-[9px] font-mono font-bold text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded uppercase">Condicionales</span>
+                                <i data-lucide="graduation-cap" class="w-4 h-4 text-blue-400"></i>
+                            </div>
+                            <h4 class="font-bold text-xs text-slate-200">1. Validador con Alerta</h4>
+                        </div>
+
+                        <!-- Challenge 2 Card -->
+                        <div onclick="selectChallenge(2)" id="chal-card-2" class="p-3.5 rounded-xl bg-slate-900/30 border border-slate-850 hover:bg-slate-800/40 cursor-pointer transition border-l-4 border-l-transparent">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded uppercase">Bucles (while)</span>
+                                <i data-lucide="piggy-bank" class="w-4 h-4 text-emerald-400"></i>
+                            </div>
+                            <h4 class="font-bold text-xs text-slate-400">2. Alcancía Digital</h4>
+                        </div>
+
+                        <!-- Challenge 3 Card -->
+                        <div onclick="selectChallenge(3)" id="chal-card-3" class="p-3.5 rounded-xl bg-slate-900/30 border border-slate-850 hover:bg-slate-800/40 cursor-pointer transition border-l-4 border-l-transparent">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-[9px] font-mono font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded uppercase">Cálculo Mixto</span>
+                                <i data-lucide="car" class="w-4 h-4 text-amber-400"></i>
+                            </div>
+                            <h4 class="font-bold text-xs text-slate-400">3. Tarifador Estacionamiento</h4>
+                        </div>
+                    </div>
+
+                    <!-- Enunciado Display Card -->
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 space-y-3">
+                        <span class="text-[10px] font-mono text-slate-400 tracking-wider font-bold uppercase flex items-center gap-1">
+                            <i data-lucide="file-text" class="w-3.5 h-3.5 text-indigo-400"></i>
+                            Enunciado Oficial
+                        </span>
+                        <div id="challenge-enunciado-text" class="text-xs text-slate-300 leading-relaxed">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Interactive POECE Worksheet & Simulation -->
+                <div class="lg:col-span-8 space-y-6">
+                    
+                    <!-- POECE Interactive Step Binder -->
+                    <div class="glass-card rounded-2xl p-5 space-y-5 shadow-xl border-t border-t-indigo-500/10">
+                        
+                        <!-- POECE Circle Selector Header -->
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 rounded text-[10px] font-mono">PASO POR PASO</span>
+                                <h3 class="font-bold text-sm text-slate-200">Guía de Análisis Metodológico</h3>
+                            </div>
+
+                            <!-- P-O-E-C-E circles -->
+                            <div class="flex gap-2">
+                                <button onclick="setPoeceStep('P')" id="poece-btn-P" class="w-7 h-7 rounded-full font-bold text-xs flex items-center justify-center transition border border-slate-700 bg-slate-900 text-blue-400 poece-active">P</button>
+                                <button onclick="setPoeceStep('O')" id="poece-btn-O" class="w-7 h-7 rounded-full font-bold text-xs flex items-center justify-center transition border border-slate-700 bg-slate-900 text-slate-400">O</button>
+                                <button onclick="setPoeceStep('E')" id="poece-btn-E" class="w-7 h-7 rounded-full font-bold text-xs flex items-center justify-center transition border border-slate-700 bg-slate-900 text-slate-400">E</button>
+                                <button onclick="setPoeceStep('C')" id="poece-btn-C" class="w-7 h-7 rounded-full font-bold text-xs flex items-center justify-center transition border border-slate-700 bg-slate-900 text-slate-400">C</button>
+                                <button onclick="setPoeceStep('E2')" id="poece-btn-E2" class="w-7 h-7 rounded-full font-bold text-xs flex items-center justify-center transition border border-slate-700 bg-slate-900 text-slate-400">E</button>
+                            </div>
+                        </div>
+
+                        <!-- Guide and input section -->
+                        <div class="space-y-4">
+                            <!-- Injected Help & Guide Text -->
+                            <div class="bg-indigo-500/5 p-3.5 rounded-xl border border-indigo-500/10 space-y-1">
+                                <h4 id="poece-guide-title" class="text-xs font-bold text-indigo-300 flex items-center gap-1">
+                                    <!-- Injected -->
+                                </h4>
+                                <p id="poece-guide-desc" class="text-[11px] text-slate-400 leading-relaxed">
+                                    <!-- Injected -->
+                                </p>
+                            </div>
+
+                            <!-- Input text-area where student types analysis -->
+                            <div class="space-y-1.5">
+                                <label class="text-[10px] font-mono text-slate-400 tracking-wider font-bold uppercase block">Completá tu análisis acá:</label>
+                                <textarea id="poece-student-input" oninput="saveStudentWork()" rows="4" placeholder="Escribí acá tu respuesta o análisis..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition font-sans"></textarea>
+                            </div>
+
+                            <!-- Interactive Cloud Save Indicator & Button inside Worksheet -->
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-2">
+                                <span class="text-[10px] text-slate-500 font-mono flex items-center gap-1">
+                                    <i data-lucide="cloud" class="w-3.5 h-3.5 text-indigo-500/60"></i>
+                                    Tu progreso se guarda de forma local en tu navegador y podés subirlo.
+                                </span>
+                                <button onclick="saveProgressToCloud()" class="py-1.5 px-3 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold rounded-lg flex items-center gap-1.5 transition shadow-lg shadow-emerald-950/20 w-full sm:w-auto justify-center">
+                                    <i data-lucide="cloud-lightning" class="w-3.5 h-3.5 animate-pulse"></i> Sincronizar con el Profe
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Simulation Widget -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        <!-- Simulated Controls -->
+                        <div class="md:col-span-5 bg-slate-900/80 border border-slate-800 rounded-xl p-4 flex flex-col justify-between space-y-4">
+                            <div class="space-y-3">
+                                <span class="text-[10px] font-mono text-emerald-400 tracking-wider font-bold uppercase block flex items-center gap-1">
+                                    <i data-lucide="play-circle" class="w-3.5 h-3.5"></i>
+                                    Prueba de Escritorio Activa
+                                </span>
+                                <div id="simulator-inputs-container" class="space-y-3">
+                                    <!-- Injected inputs based on active challenge -->
+                                </div>
+                            </div>
+                            <button onclick="runLocalSimulation()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5">
+                                <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                                Ejecutar Algoritmo
+                            </button>
+                        </div>
+
+                        <!-- Simulated terminal output -->
+                        <div class="md:col-span-7 bg-black rounded-xl border border-slate-850 p-3.5 flex flex-col justify-between h-56">
+                            <div class="flex items-center justify-between border-b border-slate-900 pb-2 mb-2">
+                                <span class="text-[9px] font-mono text-slate-500">TERMINAL OUTPUT (MOCKUP)</span>
+                                <button onclick="clearSimTerminal()" class="text-[9px] font-mono text-slate-600 hover:text-slate-400 transition flex items-center gap-1">
+                                    <i data-lucide="refresh-cw" class="w-2.5 h-2.5"></i> Limpiar
+                                </button>
+                            </div>
+                            <div class="flex-grow overflow-y-auto text-xs font-mono terminal-scroll space-y-1.5 pr-1" id="sim-terminal-logs">
+                                <!-- Simulator Logs -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- STUDENT TAB 2: MI REPORTE -->
+            <div id="student-reporte-content" class="hidden glass-card rounded-2xl p-6 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                    <div class="space-y-1">
+                        <h3 class="font-bold text-base text-slate-100 flex items-center gap-2">
+                            <i data-lucide="scroll" class="text-indigo-400 w-5 h-5"></i>
+                            Mi Trabajo POECE Guardado
+                        </h3>
+                        <p class="text-xs text-slate-400">Todo lo que vayas escribiendo en las pestañas se compila acá automáticamente.</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <!-- Extra Cloud Save Trigger inside report tab -->
+                        <button onclick="saveProgressToCloud()" class="py-2 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-950/20">
+                            <i data-lucide="cloud-upload" class="w-4 h-4"></i>
+                            Guardar en la Nube
+                        </button>
+                        <button onclick="downloadReport()" class="py-2 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            Descargar Reporte Físico
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Report compilation preview -->
+                <div class="bg-slate-950/80 rounded-xl p-5 border border-slate-850 space-y-6 max-h-[500px] overflow-y-auto">
+                    <div class="border-b border-slate-900 pb-3">
+                        <p class="text-xs text-slate-400">Estudiante: <span id="report-name-lbl" class="font-bold text-indigo-300">Anónimo</span></p>
+                        <p class="text-[10px] text-slate-500 font-mono">Curso: 3° 1° (Grupo A2) — Escuela Industrial N° 9</p>
+                    </div>
+
+                    <!-- Dynamic Report Content -->
+                    <div id="report-preview-box" class="space-y-6 text-xs">
+                        <!-- JS compiles this -->
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Teacher Area (Hidden by default, password locked) -->
+        <section id="teacher-workspace" class="hidden space-y-6">
+            
+            <!-- Auth Lock Card (No Demo option as requested) -->
+            <div id="teacher-auth-card" class="max-w-md mx-auto glass-card rounded-2xl p-6 space-y-4 text-center border-t-2 border-t-indigo-500">
+                <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-full w-12 h-12 mx-auto flex items-center justify-center">
+                    <i data-lucide="shield-check" class="w-6 h-6"></i>
+                </div>
+                <div class="space-y-1">
+                    <h3 class="font-bold text-slate-200 text-base">Espacio del Docente</h3>
+                    <p class="text-xs text-slate-400">Ingresá la clave del Profesor para ver las soluciones y monitorear respuestas.</p>
+                </div>
+
+                <div class="space-y-3">
+                    <input type="password" id="teacher-pass" placeholder="Contraseña de Profesor" class="w-full text-center bg-slate-950 border border-slate-800 rounded-xl py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 font-mono" onkeydown="if(event.key === 'Enter') checkTeacherAuth()">
+                    <button onclick="checkTeacherAuth()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition">Desbloquear Panel</button>
+                    <p class="text-[9px] font-mono text-slate-600">Tip de clase: La clave del taller es <code class="bg-slate-950 px-1 py-0.5 rounded text-indigo-400 font-bold">PROFE-A2</code></p>
+                </div>
+            </div>
+
+            <!-- Authentic Teacher Dashboard (Unlocked) -->
+            <div id="teacher-content-panel" class="hidden flex flex-col space-y-6 animate-fadeIn">
+                
+                <!-- Tab Menu for Teacher Dashboard -->
+                <div class="flex bg-slate-950 p-1.5 rounded-xl border border-slate-850 gap-2 max-w-lg">
+                    <button onclick="setTeacherTab('soluciones')" id="t-tab-btn-soluciones" class="t-tab-btn flex-1 py-2 px-3 rounded-lg text-xs font-bold transition bg-indigo-600 text-white">
+                        <i data-lucide="book-open" class="w-3.5 h-3.5 inline mr-1"></i> Solucionarios de Referencia
+                    </button>
+                    <button onclick="setTeacherTab('monitoreo')" id="t-tab-btn-monitoreo" class="t-tab-btn flex-1 py-2 px-3 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/40">
+                        <i data-lucide="radio" class="w-3.5 h-3.5 inline mr-1"></i> Monitorear Alumnos (<span id="connected-count">0</span>)
+                    </button>
+                </div>
+
+                <!-- TEACHER TAB 1: SOLUCIONARIOS -->
+                <div id="t-content-soluciones" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-4 space-y-4">
+                        <div class="bg-indigo-950/30 border border-indigo-500/15 rounded-xl p-5 space-y-3">
+                            <h4 class="font-bold text-xs text-indigo-300 flex items-center gap-1.5 uppercase tracking-wider">
+                                <i data-lucide="info" class="w-4 h-4"></i>
+                                Guía para Prof. Pablo
+                            </h4>
+                            <p class="text-[11px] text-slate-400 leading-relaxed">
+                                Estas soluciones corresponden exactamente al nivel planteado para 3° año. No se utilizaron funciones complejas innecesarias para facilitar el análisis inicial del alumno.
+                            </p>
+                            <div class="h-px bg-slate-800"></div>
+                            <ul class="space-y-2 text-[10px] text-slate-500">
+                                <li>🚩 **Desafío 1**: Evalúa el uso de condicionales lógicos (`or`).</li>
+                                <li>🚩 **Desafío 2**: Introduce los conceptos de acumuladores y centinelas en bucles `while`.</li>
+                                <li>🚩 **Desafío 3**: Obliga a pensar en un descuento marginal estructurado (`if/else`).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-8 bg-slate-900/60 border border-slate-800 rounded-xl p-5 space-y-5">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <span class="text-xs font-mono text-slate-400">SOLUCIONARIO GENERAL PARA LA CLASE</span>
+                            <div class="flex gap-2">
+                                <button onclick="selectTeacherSol(1)" id="t-sol-btn-1" class="px-2.5 py-1 text-[10px] font-bold bg-indigo-600 rounded text-white transition">Desafío 1</button>
+                                <button onclick="selectTeacherSol(2)" id="t-sol-btn-2" class="px-2.5 py-1 text-[10px] font-bold bg-slate-800 rounded text-slate-400 transition">Desafío 2</button>
+                                <button onclick="selectTeacherSol(3)" id="t-sol-btn-3" class="px-2.5 py-1 text-[10px] font-bold bg-slate-800 rounded text-slate-400 transition">Desafío 3</button>
+                            </div>
+                        </div>
+
+                        <!-- Code Solution Container -->
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center text-xs">
+                                <span id="sol-title" class="font-bold text-slate-200">Solución Desafío 1: Validador de Notas con Alerta</span>
+                                <button onclick="copySolCode()" class="p-1 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded text-[10px] flex items-center gap-1 transition">
+                                    <i data-lucide="copy" class="w-3 h-3"></i> Copiar código
+                                </button>
+                            </div>
+                            <div class="bg-black/80 rounded-xl border border-slate-850 p-4 overflow-x-auto relative h-[320px]">
+                                <pre class="code-font text-[11px] leading-relaxed text-indigo-300" id="sol-code-block"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TEACHER TAB 2: LIVE ALUMNI MONITOR -->
+                <div id="t-content-monitoreo" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Students list panel -->
+                    <div class="lg:col-span-4 bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex flex-col justify-between min-h-[480px]">
+                        <div class="space-y-4">
+                            <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
+                                <h4 class="font-bold text-xs text-slate-200">Respuestas Sincronizadas</h4>
+                                <span class="px-1.5 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-[9px] text-indigo-400 font-mono" id="connected-count-sub">0 alumnos</span>
+                            </div>
+                            <div class="space-y-1.5 max-h-[360px] overflow-y-auto pr-1" id="teacher-students-list">
+                                <!-- Populated dynamically by JS -->
+                                <p class="text-[11px] text-slate-600 italic text-center py-8">Esperando respuestas de los alumnos...</p>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800/80 flex items-center gap-1.5 text-[9px] text-slate-500 font-mono">
+                            <i data-lucide="info" class="w-3.5 h-3.5"></i>
+                            Hacé click en un alumno de la lista para inspeccionar sus respuestas del método POECE.
+                        </div>
+                    </div>
+
+                    <!-- Selected Student Analysis viewer -->
+                    <div class="lg:col-span-8 bg-slate-900/40 border border-slate-800 rounded-xl p-5 space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-800 pb-3">
+                            <div>
+                                <h3 class="font-bold text-sm text-slate-200" id="monitored-student-title">Seleccioná un estudiante</h3>
+                                <p class="text-[10px] text-slate-500 font-mono" id="monitored-student-sub">ID: Ninguno seleccionado</p>
+                            </div>
+                            
+                            <!-- Challenge Selector for monitored view -->
+                            <select id="monitored-challenge-selector" onchange="selectMonitoredChallenge()" class="bg-slate-950 border border-slate-800 text-[10px] rounded-lg px-2 py-1.5 text-slate-300 focus:outline-none focus:border-indigo-500 font-mono">
+                                <option value="1">Desafío 1: Validador de Notas</option>
+                                <option value="2">Desafío 2: Alcancía Digital</option>
+                                <option value="3">Desafío 3: Tarifador Estacionamiento</option>
+                            </select>
+                        </div>
+
+                        <!-- Big grid of student POECE answers -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="monitored-details-grid">
+                            <!-- Injected dynamically -->
+                            <div class="md:col-span-2 text-center py-16 text-slate-600 italic text-xs">
+                                Seleccioná un estudiante del panel lateral para cargar la información.
+                            </div>
+                        </div>
+
+                        <!-- Copy student answers block option -->
+                        <div class="pt-3 border-t border-slate-800 flex justify-end" id="monitored-actions-row">
+                            <!-- Injected dynamically when student loaded -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-900 bg-[#04050a] py-6 px-6 text-center text-[10px] text-slate-600 mt-12">
+        <div class="max-w-7xl mx-auto space-y-1">
+            <p class="font-semibold text-slate-500">Escuela Industrial N° 9 — El Calafate, Santa Cruz, Argentina</p>
+            <p>Laboratorio Didáctico de Algoritmos y Programación 3° 1° — Prof. Pablo Limardo</p>
+        </div>
+    </footer>
+
+    <!-- Firebase & JS Modules Program logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global state references
+        let db = null;
+        let auth = null;
+        let isFirebaseConnected = false;
+        
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        const firebaseConfigRaw = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
+
+        let currentUser = null;
+        let syncedStudentsMap = {}; // Holds Firestore or simulated real-time answers
+
+        // Local Storage / State backups
+        let studentWork = {
+            1: { P: "", O: "", E: "", C: "", E2: "" },
+            2: { P: "", O: "", E: "", C: "", E2: "" },
+            3: { P: "", O: "", E: "", C: "", E2: "" }
+        };
+
+        let currentRole = 'student';
+        let currentStudentTab = 'desafios';
+        let currentChallengeIdx = 1;
+        let currentPoeceStep = 'P';
+        let activeSolIdx = 1;
+        let isTeacherUnlocked = false;
+        let currentTeacherTab = 'soluciones';
+        let selectedMonitoredStudentId = null;
+
+        // Interactive simulation state
+        let savingsSimState = {
+            meta: 1000,
+            acumulado: 0,
+            meses: 0
+        };
+
+        // Simulated High Fidelity fallback database for offline teaching support
+        const mockAlumniData = {
+            "mock-sofia": {
+                uid: "mock-sofia",
+                name: "Sofía Rodríguez",
+                answers: {
+                    1: {
+                        P: "El enunciado nos pide ingresar 3 notas float, sacar promedio, y disparar un cartel especial en caso de que alguna nota sea aplazo (menor a 4).",
+                        O: "Hacer un programa que muestre el promedio final siempre, y que agregue una advertencia si hay alguna nota < 4.",
+                        E: "Pedir nota1, nota2, nota3. Calcular promedio. Usar un condicional IF con el operador OR para evaluar si alguna es menor a 4.",
+                        C: "nota1 = float(input('N1: '))\nif nota1 < 4 or nota2 < 4 or nota3 < 4:\n   print('Alerta de aplazo!')",
+                        E2: "Probado con notas 8, 3 y 9. Promedio da 6.66 y dispara el cartel de alerta correctamente por el aplazo de 3.0."
+                    },
+                    2: {
+                        P: "Simular una meta de ahorro en una alcancía e ingresar depósitos mensuales hasta que el total alcance la meta.",
+                        O: "Imprimir la cantidad de meses totales y el saldo a favor una vez superada la meta.",
+                        E: "Necesitamos un bucle while con la condición 'total_ahorrado < meta'. Adentro, pedimos depósitos y sumamos acumuladores.",
+                        C: "while total_ahorrado < meta:\n   deposito = float(input())\n   total_ahorrado += deposito",
+                        E2: "Probé con meta de $1000 y depósitos de 300, 500 y 400. Se frena en mes 3 con $200 de saldo a favor."
+                    },
+                    3: {
+                        P: "Cobrar tarifas de estacionamiento diferenciadas por tramos.",
+                        O: "Tarifador condicional: 2 primeras horas a $500, a partir de la tercera es $300 por cada hora adicional.",
+                        E: "Usamos if/else. Si horas <= 2, es horas * 500. Si es mayor, es 1000 + ((horas-2) * 300).",
+                        C: "if horas <= 2:\n   total = horas * 500\nelse:\n   total = 1000 + ((horas-2) * 300)",
+                        E2: "1 h = $500 | 2 hs = $1000 | 5 hs = $1900 ($1000 de las 2 hs iniciales + $900 de las 3 hs adicionales)."
+                    }
+                }
+            },
+            "mock-fede": {
+                uid: "mock-fede",
+                name: "Federico Benítez",
+                answers: {
+                    1: {
+                        P: "Ingresar 3 notas de exámenes escolares, calcular el promedio de la cursada, y mostrar alerta en caso de aplazo.",
+                        O: "Retornar siempre promedio, alertando al alumno si posee alguna nota reprobada menor a 4.",
+                        E: "Ingresar variables y calcular promedio. Estructurar un condicional IF evaluando si 'n1 < 4' o 'n2 < 4' o 'n3 < 4' es verdadero.",
+                        C: "if (nota1 < 4) or (nota2 < 4) or (nota3 < 4):\n   print('¡Tenés un aplazo!')",
+                        E2: "Ingresos: 7.0, 7.0 y 7.0. Promedio: 7.0. No muestra alerta porque ninguna nota califica como aplazo."
+                    },
+                    2: { P: "Controlar un bucle de ahorro hasta cruzar una meta fijada por pantalla.", O: "Mostrar meses y vuelto final.", E: "Bucle indefinido while con una variable contadora para los meses.", C: "", E2: "" },
+                    3: { P: "", O: "", E: "", C: "", E2: "" }
+                }
+            }
+        };
+
+        // Setup Firebase dynamically
+        const initFirebase = async () => {
+            if (firebaseConfigRaw) {
+                try {
+                    const firebaseConfig = JSON.parse(firebaseConfigRaw);
+                    const app = initializeApp(firebaseConfig);
+                    auth = getAuth(app);
+                    db = getFirestore(app);
+
+                    // Authentication protocol (RULE 3)
+                    if (initialAuthToken) {
+                        await signInWithCustomToken(auth, initialAuthToken);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+
+                    isFirebaseConnected = true;
+                    updateSyncBadge(true);
+                    setupRealTimeListeners();
+                } catch (e) {
+                    console.warn("Fallo de inicio de Firebase. Trabajando en modo local offline:", e);
+                    useOfflineFallback();
+                }
+            } else {
+                useOfflineFallback();
+            }
+        };
+
+        const updateSyncBadge = (connected) => {
+            const badge = document.getElementById('sync-status');
+            if (connected) {
+                badge.className = "px-2.5 py-1 bg-emerald-950 border border-emerald-800 text-emerald-400 rounded-lg text-[10px] font-mono flex items-center gap-1.5";
+                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> <span>Nube Sincronizada</span>`;
+            } else {
+                badge.className = "px-2.5 py-1 bg-slate-900 border border-slate-800 text-slate-400 rounded-lg text-[10px] font-mono flex items-center gap-1.5";
+                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> <span>Modo local</span>`;
+            }
+        };
+
+        const useOfflineFallback = () => {
+            isFirebaseConnected = false;
+            updateSyncBadge(false);
+            // Ingest mock student database to easily show functionality
+            syncedStudentsMap = { ...mockAlumniData };
+            updateConnectedCount();
+            renderStudentsList();
+        };
+
+        // Real-Time database sync listeners (Professors monitoring dashboard)
+        const setupRealTimeListeners = () => {
+            if (!db || !isFirebaseConnected) return;
+
+            // Strict collection path rule 1 applied
+            const collectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'respuestas_alumnos');
+            
+            onSnapshot(collectionRef, (snapshot) => {
+                syncedStudentsMap = {};
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    syncedStudentsMap[doc.id] = data;
+                });
+                
+                // Add offline mocks anyway so list is never empty during demo testing
+                Object.keys(mockAlumniData).forEach(mId => {
+                    if (!syncedStudentsMap[mId]) {
+                        syncedStudentsMap[mId] = mockAlumniData[mId];
+                    }
+                });
+
+                updateConnectedCount();
+                renderStudentsList();
+
+                // If currently inspecting a student, refresh their details in the monitor panel
+                if (selectedMonitoredStudentId) {
+                    loadSelectedStudentDetails(selectedMonitoredStudentId);
+                }
+            }, (error) => {
+                console.error("Error en Snapshot Firestore:", error);
+            });
+        };
+
+        const updateConnectedCount = () => {
+            const count = Object.keys(syncedStudentsMap).length;
+            const element = document.getElementById('connected-count');
+            const subElement = document.getElementById('connected-count-sub');
+            if (element) element.innerText = count;
+            if (subElement) subElement.innerText = `${count} alumnos`;
+        };
+
+        // Student Save trigger to Firestore (Cloud sync)
+        const saveProgressToCloud = async () => {
+            const studentName = document.getElementById('student-name').value.trim();
+            if (!studentName) {
+                showNotification("error", "Ingresá tu Nombre y Apellido en la esquina superior antes de sincronizar.");
+                return;
+            }
+
+            // Lock UI button visually during sync
+            showNotification("info", "Sincronizando respuestas...");
+
+            if (!isFirebaseConnected) {
+                // If offline, save into simulated memory pool
+                const simId = "student-local-offline";
+                syncedStudentsMap[simId] = {
+                    uid: simId,
+                    name: studentName,
+                    answers: JSON.parse(JSON.stringify(studentWork))
+                };
+                updateConnectedCount();
+                renderStudentsList();
+                setTimeout(() => {
+                    showNotification("success", "Sincronizado de manera simulada local (Base de datos offline).");
+                }, 800);
+                return;
+            }
+
+            // Real Firestore transaction
+            try {
+                const uid = auth.currentUser ? auth.currentUser.uid : 'anonymous-session';
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'respuestas_alumnos', uid);
+                
+                await setDoc(docRef, {
+                    uid: uid,
+                    name: studentName,
+                    answers: studentWork,
+                    timestamp: new Date().getTime()
+                }, { merge: true });
+
+                showNotification("success", "¡Progreso sincronizado! Tu profesor ya puede ver tus respuestas en vivo.");
+            } catch (err) {
+                console.error("Error guardando en Firestore:", err);
+                showNotification("error", "No se pudo sincronizar en el servidor. Descargá tu reporte físico.");
+            }
+        };
+
+        // Interactive Student State Save Handler
+        const saveStudentWork = () => {
+            const txtValue = document.getElementById('poece-student-input').value;
+            studentWork[currentChallengeIdx][currentPoeceStep] = txtValue;
+            compileReportPreview();
+        };
+
+        const loadStudentWork = () => {
+            document.getElementById('poece-student-input').value = studentWork[currentChallengeIdx][currentPoeceStep] || "";
+        };
+
+        // Switch student challenges
+        const selectChallenge = (idx) => {
+            currentChallengeIdx = idx;
+
+            for (let i = 1; i <= 3; i++) {
+                const card = document.getElementById(`chal-card-${i}`);
+                if (i === idx) {
+                    let borderCol = "border-l-blue-500 bg-slate-900";
+                    if (i === 2) borderCol = "border-l-emerald-500 bg-slate-900";
+                    if (i === 3) borderCol = "border-l-amber-500 bg-slate-900";
+                    card.className = `p-3.5 rounded-xl border border-slate-700 hover:bg-slate-800/40 cursor-pointer transition ${borderCol}`;
+                } else {
+                    card.className = "p-3.5 rounded-xl bg-slate-900/30 border border-slate-850 hover:bg-slate-800/40 cursor-pointer transition border-l-4 border-l-transparent";
+                }
+            }
+
+            document.getElementById('challenge-enunciado-text').innerHTML = challenges[idx].enunciado;
+            document.getElementById('simulator-inputs-container').innerHTML = challenges[idx].inputsHTML;
+
+            loadStudentWork();
+            setPoeceStep('P');
+
+            if (idx === 2) resetSavingsSim();
+
+            clearSimTerminal();
+            addSimLog("Sistema cargado. Listo para probar.");
+        };
+
+        const setPoeceStep = (step) => {
+            currentPoeceStep = step;
+
+            const steps = ['P', 'O', 'E', 'C', 'E2'];
+            steps.forEach(s => {
+                const btn = document.getElementById(`poece-btn-${s}`);
+                if (s === step) {
+                    let color = "text-blue-400 bg-[#16213a] border-blue-500/50";
+                    if (step === 'O') color = "text-orange-400 bg-[#291e1d] border-orange-500/50";
+                    if (step === 'E') color = "text-purple-400 bg-[#251b31] border-purple-500/50";
+                    if (step === 'C') color = "text-emerald-400 bg-[#192621] border-emerald-500/50";
+                    if (step === 'E2') color = "text-red-400 bg-[#281b1d] border-red-500/50";
+
+                    btn.className = `w-7 h-7 rounded-full font-bold text-xs flex items-center justify-center transition border poece-active ${color}`;
+                } else {
+                    btn.className = "w-7 h-7 rounded-full font-bold text-xs flex items-center justify-center transition border border-slate-700 bg-slate-900 text-slate-400";
+                }
+            });
+
+            const stepKey = step === 'E2' ? 'E2' : step;
+            const stepData = challenges[currentChallengeIdx].poeceGuide[stepKey];
+            document.getElementById('poece-guide-title').innerText = stepData.title;
+            document.getElementById('poece-guide-desc').innerText = stepData.desc;
+
+            document.getElementById('poece-student-input').value = studentWork[currentChallengeIdx][stepKey] || "";
+        };
+
+        // Student layout switcher
+        const setStudentTab = (tab) => {
+            currentStudentTab = tab;
+            document.querySelectorAll('.student-tab-btn').forEach(btn => {
+                btn.className = "student-tab-btn flex-1 py-2 px-3 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 transition";
+            });
+
+            const activeBtn = document.getElementById(`tab-btn-${tab}`);
+            activeBtn.className = "student-tab-btn flex-1 py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 bg-indigo-600 text-white transition shadow-md shadow-indigo-950/45";
+
+            if (tab === 'desafios') {
+                document.getElementById('student-desafios-content').classList.remove('hidden');
+                document.getElementById('student-reporte-content').classList.add('hidden');
+            } else {
+                document.getElementById('student-desafios-content').classList.add('hidden');
+                document.getElementById('student-reporte-content').classList.remove('hidden');
+                compileReportPreview();
+            }
+        };
+
+        const updateReportName = () => {
+            const name = document.getElementById('student-name').value.trim();
+            document.getElementById('report-name-lbl').innerText = name || "Anónimo";
+        };
+
+        const compileReportPreview = () => {
+            const container = document.getElementById('report-preview-box');
+            container.innerHTML = "";
+
+            for (let idx = 1; idx <= 3; idx++) {
+                const chal = challenges[idx];
+                const work = studentWork[idx];
+
+                const section = document.createElement('div');
+                section.className = "p-4 bg-slate-900 border border-slate-850 rounded-xl space-y-3";
+                section.innerHTML = `
+                    <div class="border-b border-slate-800 pb-2">
+                        <h4 class="font-bold text-xs text-indigo-300">${chal.title}</h4>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                        <div class="p-2 bg-slate-950/40 rounded border border-slate-850 text-[10px]">
+                            <span class="font-bold text-blue-400 block mb-1">P - Problema</span>
+                            <p class="text-slate-300 italic whitespace-pre-wrap">${work.P || "No completado"}</p>
+                        </div>
+                        <div class="p-2 bg-slate-950/40 rounded border border-slate-850 text-[10px]">
+                            <span class="font-bold text-orange-400 block mb-1">O - Objetivo</span>
+                            <p class="text-slate-300 italic whitespace-pre-wrap">${work.O || "No completado"}</p>
+                        </div>
+                        <div class="p-2 bg-slate-950/40 rounded border border-slate-850 text-[10px]">
+                            <span class="font-bold text-purple-400 block mb-1">E - Estrategia</span>
+                            <p class="text-slate-300 italic whitespace-pre-wrap">${work.E || "No completado"}</p>
+                        </div>
+                        <div class="p-2 bg-slate-950/40 rounded border border-slate-850 text-[10px]">
+                            <span class="font-bold text-emerald-400 block mb-1">C - Código</span>
+                            <p class="text-slate-300 italic whitespace-pre-wrap">${work.C || "No completado"}</p>
+                        </div>
+                        <div class="p-2 bg-slate-950/40 rounded border border-slate-850 text-[10px]">
+                            <span class="font-bold text-red-400 block mb-1">E - Evaluación</span>
+                            <p class="text-slate-300 italic whitespace-pre-wrap">${work.E2 || "No completado"}</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(section);
+            }
+        };
+
+        const downloadReport = () => {
+            const studentName = document.getElementById('student-name').value.trim() || "Anónimo";
+            
+            let fileContent = `========================================================\n`;
+            fileContent += `REPORTE DE CLASE: MÉTODO POECE\n`;
+            fileContent += `========================================================\n`;
+            fileContent += `Estudiante: ${studentName}\n`;
+            fileContent += `Curso: 3° 1° (Grupo A2) — Escuela Industrial N° 9\n`;
+            fileContent += `Profesor: Pablo Limardo\n`;
+            fileContent += `Fecha: ${new Date().toLocaleDateString()}\n\n`;
+
+            for (let idx = 1; idx <= 3; idx++) {
+                const chal = challenges[idx];
+                const work = studentWork[idx];
+
+                fileContent += `--------------------------------------------------------\n`;
+                fileContent += `DESAFÍO ${idx}: ${chal.title.toUpperCase()}\n`;
+                fileContent += `--------------------------------------------------------\n`;
+                fileContent += `P - PROBLEMA (Análisis inicial):\n${work.P || "No completado"}\n\n`;
+                fileContent += `O - OBJETIVO:\n${work.O || "No completado"}\n\n`;
+                fileContent += `E - ESTRATEGIA (Algoritmo):\n${work.E || "No completado"}\n\n`;
+                fileContent += `C - CÓDIGO (Notas / Estructura):\n${work.C || "No completado"}\n\n`;
+                fileContent += `E - EVALUACIÓN (Prueba de Escritorio):\n${work.E2 || "No completado"}\n\n`;
+            }
+
+            const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Reporte_POECE_${studentName.replace(/\s+/g, '_')}.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        // Terminal & simulation logs
+        const clearSimTerminal = () => {
+            document.getElementById('sim-terminal-logs').innerHTML = "";
+        };
+
+        const addSimLog = (text, colorClass = "text-slate-400") => {
+            const term = document.getElementById('sim-terminal-logs');
+            const line = document.createElement('div');
+            line.className = `font-mono text-xs ${colorClass}`;
+            line.innerText = text;
+            term.appendChild(line);
+            term.scrollTop = term.scrollHeight;
+        };
+
+        const runLocalSimulation = () => {
+            clearSimTerminal();
+
+            if (currentChallengeIdx === 1) {
+                const n1 = parseFloat(document.getElementById('sim-c1-n1').value);
+                const n2 = parseFloat(document.getElementById('sim-c1-n2').value);
+                const n3 = parseFloat(document.getElementById('sim-c1-n3').value);
+
+                if (isNaN(n1) || isNaN(n2) || isNaN(n3)) {
+                    addSimLog("Error: Todas las notas ingresadas deben ser números válidos.", "text-red-500 font-bold");
+                    return;
+                }
+
+                addSimLog("> python validador_notas.py", "text-slate-500");
+                addSimLog(`[ENTRADA] Notas ingresadas: [${n1.toFixed(1)}, ${n2.toFixed(1)}, ${n3.toFixed(1)}]`);
+                
+                const prom = (n1 + n2 + n3) / 3;
+                addSimLog(`[PROCESO] Calculando promedio: (${n1} + ${n2} + ${n3}) / 3 = ${prom.toFixed(2)}`);
+                
+                addSimLog(`\nPromedio final: {prom.toFixed(2)}`, "text-emerald-400 font-bold");
+
+                const tieneAplazo = n1 < 4 || n2 < 4 || n3 < 4;
+                if (tieneAplazo) {
+                    addSimLog("⚠️ [OUTPUT] ¡Alerta! Tenés un aplazo pendiente de aprobación.", "text-amber-400 font-bold");
+                } else {
+                    addSimLog("✅ [OUTPUT] Todas las materias aprobadas.", "text-slate-300");
+                }
+
+            } else if (currentChallengeIdx === 2) {
+                addSimLog("> python alcancia_digital.py", "text-slate-500");
+                addSimLog(`Establecé la meta y usá el botón 'Depositar' para simular el bucle.`, "text-indigo-400");
+                addSimLog(`Meta actual: $${savingsSimState.meta}`, "text-slate-300");
+                addSimLog(`Llevás acumulado: $${savingsSimState.acumulado} en ${savingsSimState.meses} meses.`, "text-slate-300");
+
+            } else if (currentChallengeIdx === 3) {
+                const horas = parseInt(document.getElementById('sim-c3-horas').value);
+                
+                if (isNaN(horas) || horas < 1) {
+                    addSimLog("Error: Por favor ingresá un número de horas mayor a cero.", "text-red-500 font-bold");
+                    return;
+                }
+
+                addSimLog("> python tarifador_estacionamiento.py", "text-slate-500");
+                addSimLog(`[ENTRADA] Horas totales en estacionamiento: ${horas} horas.`);
+
+                let total = 0;
+                if (horas <= 2) {
+                    total = horas * 500;
+                    addSimLog(`[PROCESO] ${horas} hs x $500/hs = $${total}`);
+                } else {
+                    const adicionales = horas - 2;
+                    total = 1000 + (adicionales * 300);
+                    addSimLog(`[PROCESO] Primeras 2 hs = $1000`);
+                    addSimLog(`[PROCESO] Horas extras: ${adicionales} hs x $300/hs = $${adicionales * 300}`);
+                }
+
+                addSimLog(`\n---------- TICKET DE PAGO ----------`, "text-emerald-400");
+                addSimLog(`Estadía total registrada: ${horas} horas.`, "text-emerald-400");
+                addSimLog(`Monto neto total a pagar: $${total}`, "text-emerald-400 font-bold");
+                addSimLog(`------------------------------------`, "text-emerald-400");
+            }
+        };
+
+        const resetSavingsSim = () => {
+            const mInput = parseFloat(document.getElementById('sim-c2-meta').value);
+            savingsSimState.meta = isNaN(mInput) ? 1000 : mInput;
+            savingsSimState.acumulado = 0;
+            savingsSimState.meses = 0;
+        };
+
+        const depositAhorroSim = () => {
+            if (savingsSimState.acumulado >= savingsSimState.meta) {
+                clearSimTerminal();
+                addSimLog("⚠️ La meta ya fue alcanzada. Cambiá la meta para volver a probar.", "text-amber-400");
+                return;
+            }
+
+            const dep = parseFloat(document.getElementById('sim-c2-dep').value);
+            if (isNaN(dep) || dep <= 0) {
+                clearSimTerminal();
+                addSimLog("Error: Ingresá un depósito mayor a $0.", "text-red-500 font-bold");
+                return;
+            }
+
+            clearSimTerminal();
+            addSimLog("> python alcancia_digital.py", "text-slate-500");
+
+            savingsSimState.meses++;
+            savingsSimState.acumulado += dep;
+
+            addSimLog(`[BUCLE] Iteración Mes N° ${savingsSimState.meses}`, "text-indigo-400");
+            addSimLog(`Ingresaste: $${dep.toFixed(2)}`);
+            addSimLog(`total_ahorrado ➔ $${savingsSimState.acumulado.toFixed(2)} de $${savingsSimState.meta.toFixed(2)}`, "text-slate-300");
+
+            if (savingsSimState.acumulado >= savingsSimState.meta) {
+                const saldo = savingsSimState.acumulado - savingsSimState.meta;
+                addSimLog(`\n¡Bucle terminado! (total_ahorrado >= meta)`, "text-emerald-400 font-bold");
+                addSimLog(`Tardaste: ${savingsSimState.meses} meses.`, "text-emerald-400");
+                addSimLog(`Saldo a favor: $${saldo.toFixed(2)}`, "text-emerald-400 font-bold");
+            } else {
+                addSimLog(`Condición while (total_ahorrado < meta) es TRUE ➔ Sigue pidiendo...`, "text-slate-500");
+            }
+        };
+
+        // Role controllers
+        const toggleRole = () => {
+            if (currentRole === 'student') {
+                document.getElementById('student-workspace').classList.add('hidden');
+                document.getElementById('teacher-workspace').classList.remove('hidden');
+                document.getElementById('role-text').innerText = "Modo Estudiante";
+                document.getElementById('role-icon').setAttribute('data-lucide', 'user');
+                currentRole = 'teacher';
+
+                if (isTeacherUnlocked) {
+                    document.getElementById('teacher-auth-card').classList.add('hidden');
+                    document.getElementById('teacher-content-panel').classList.remove('hidden');
+                    renderStudentsList();
+                } else {
+                    document.getElementById('teacher-auth-card').classList.remove('hidden');
+                    document.getElementById('teacher-content-panel').classList.add('hidden');
+                }
+            } else {
+                document.getElementById('student-workspace').classList.remove('hidden');
+                document.getElementById('teacher-workspace').classList.add('hidden');
+                document.getElementById('role-text').innerText = "Modo Profesor";
+                document.getElementById('role-icon').setAttribute('data-lucide', 'lock');
+                currentRole = 'student';
+            }
+            lucide.createIcons();
+        };
+
+        const checkTeacherAuth = () => {
+            const pass = document.getElementById('teacher-pass').value.trim();
+            if (pass === "PROFE-A2") {
+                isTeacherUnlocked = true;
+                document.getElementById('teacher-auth-card').classList.add('hidden');
+                document.getElementById('teacher-content-panel').classList.remove('hidden');
+                selectTeacherSol(1);
+                renderStudentsList();
+            } else {
+                alert("Contraseña incorrecta. Probá con PROFE-A2.");
+            }
+        };
+
+        const selectTeacherSol = (idx) => {
+            activeSolIdx = idx;
+
+            for (let i = 1; i <= 3; i++) {
+                const btn = document.getElementById(`t-sol-btn-${i}`);
+                if (i === idx) {
+                    btn.className = "px-2.5 py-1 text-[10px] font-bold bg-indigo-600 rounded text-white transition";
+                } else {
+                    btn.className = "px-2.5 py-1 text-[10px] font-bold bg-slate-800 rounded text-slate-400 transition hover:text-slate-200";
+                }
+            }
+
+            document.getElementById('sol-title').innerText = `Solución Completa Desafío ${idx}`;
+            document.getElementById('sol-code-block').innerText = challenges[idx].solCode;
+        };
+
+        const copySolCode = () => {
+            const code = challenges[activeSolIdx].solCode;
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = code;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+
+            showNotification("success", "Solución copiada al portapapeles.");
+        };
+
+        // Teacher dashboard tabswitcher
+        const setTeacherTab = (tab) => {
+            currentTeacherTab = tab;
+            document.querySelectorAll('.t-tab-btn').forEach(btn => {
+                btn.className = "t-tab-btn flex-1 py-2 px-3 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/40";
+            });
+
+            const activeBtn = document.getElementById(`t-tab-btn-${tab}`);
+            activeBtn.className = "t-tab-btn flex-1 py-2 px-3 rounded-lg text-xs font-bold transition bg-indigo-600 text-white";
+
+            if (tab === 'soluciones') {
+                document.getElementById('t-content-soluciones').classList.remove('hidden');
+                document.getElementById('t-content-monitoreo').classList.add('hidden');
+            } else {
+                document.getElementById('t-content-soluciones').classList.add('hidden');
+                document.getElementById('t-content-monitoreo').classList.remove('hidden');
+                renderStudentsList();
+            }
+            lucide.createIcons();
+        };
+
+        // Render real-time active student list
+        const renderStudentsList = () => {
+            const listContainer = document.getElementById('teacher-students-list');
+            if (!listContainer) return;
+
+            listContainer.innerHTML = "";
+            const keys = Object.keys(syncedStudentsMap);
+
+            if (keys.length === 0) {
+                listContainer.innerHTML = `<p class="text-[11px] text-slate-600 italic text-center py-8">Esperando respuestas de los alumnos...</p>`;
+                return;
+            }
+
+            keys.forEach(uid => {
+                const student = syncedStudentsMap[uid];
+                
+                // Count challenges that have at least some answers filled
+                let answeredCount = 0;
+                for (let cId = 1; cId <= 3; cId++) {
+                    const ans = student.answers[cId];
+                    if (ans && (ans.P || ans.O || ans.E || ans.C || ans.E2)) {
+                        answeredCount++;
+                    }
+                }
+
+                const isActive = uid === selectedMonitoredStudentId;
+                const activeClasses = isActive ? 'bg-indigo-600/10 border-indigo-500/40 text-white' : 'bg-slate-950/40 border-slate-850 hover:bg-slate-800/30 text-slate-300';
+                
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-xl border ${activeClasses} cursor-pointer transition flex items-center justify-between group`;
+                card.onclick = () => loadSelectedStudentDetails(uid);
+                card.innerHTML = `
+                    <div class="space-y-0.5">
+                        <span class="text-xs font-bold font-sans block group-hover:text-indigo-400 transition">${student.name || "Sin nombre"}</span>
+                        <span class="text-[9px] font-mono text-slate-500 block">ID: ${uid}</span>
+                    </div>
+                    <span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${answeredCount > 0 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-800 text-slate-400'}">
+                        ${answeredCount}/3 Desafíos
+                    </span>
+                `;
+                listContainer.appendChild(card);
+            });
+        };
+
+        // Load targeted student POECE worksheet
+        const loadSelectedStudentDetails = (uid) => {
+            selectedMonitoredStudentId = uid;
+            renderStudentsList(); // Re-render to update active indicator
+
+            const student = syncedStudentsMap[uid];
+            if (!student) return;
+
+            document.getElementById('monitored-student-title').innerText = student.name || "Sin nombre";
+            document.getElementById('monitored-student-sub').innerText = `ID de sesión: ${uid}`;
+
+            // Trigger POECE grid populate
+            selectMonitoredChallenge();
+        };
+
+        const selectMonitoredChallenge = () => {
+            const grid = document.getElementById('monitored-details-grid');
+            const actionRow = document.getElementById('monitored-actions-row');
+            if (!selectedMonitoredStudentId) return;
+
+            const student = syncedStudentsMap[selectedMonitoredStudentId];
+            const activeC = document.getElementById('monitored-challenge-selector').value;
+
+            const answers = student.answers[activeC] || { P: "", O: "", E: "", C: "", E2: "" };
+
+            grid.innerHTML = `
+                <div class="p-3 bg-slate-950/50 rounded-lg border border-slate-850 space-y-1">
+                    <span class="text-[9px] font-mono text-blue-400 font-bold block uppercase border-b border-slate-900 pb-1 mb-2 flex justify-between">
+                        <span>P - PROBLEMA</span>
+                        <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
+                    </span>
+                    <p class="text-xs text-slate-300 leading-relaxed font-sans min-h-[50px] whitespace-pre-wrap">${answers.P || '<span class="text-slate-600 italic">Sin responder aún...</span>'}</p>
+                </div>
+                <div class="p-3 bg-slate-950/50 rounded-lg border border-slate-850 space-y-1">
+                    <span class="text-[9px] font-mono text-orange-400 font-bold block uppercase border-b border-slate-900 pb-1 mb-2 flex justify-between">
+                        <span>O - OBJETIVO</span>
+                        <i data-lucide="target" class="w-3.5 h-3.5"></i>
+                    </span>
+                    <p class="text-xs text-slate-300 leading-relaxed font-sans min-h-[50px] whitespace-pre-wrap">${answers.O || '<span class="text-slate-600 italic">Sin responder aún...</span>'}</p>
+                </div>
+                <div class="p-3 bg-slate-950/50 rounded-lg border border-slate-850 space-y-1">
+                    <span class="text-[9px] font-mono text-purple-400 font-bold block uppercase border-b border-slate-900 pb-1 mb-2 flex justify-between">
+                        <span>E - ESTRATEGIA</span>
+                        <i data-lucide="git-fork" class="w-3.5 h-3.5"></i>
+                    </span>
+                    <p class="text-xs text-slate-300 leading-relaxed font-sans min-h-[50px] whitespace-pre-wrap">${answers.E || '<span class="text-slate-600 italic">Sin responder aún...</span>'}</p>
+                </div>
+                <div class="p-3 bg-slate-950/50 rounded-lg border border-slate-850 space-y-1">
+                    <span class="text-[9px] font-mono text-emerald-400 font-bold block uppercase border-b border-slate-900 pb-1 mb-2 flex justify-between">
+                        <span>C - CÓDIGO</span>
+                        <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                    </span>
+                    <pre class="code-font text-[10px] text-slate-300 leading-relaxed bg-black/30 p-2 rounded max-h-[120px] overflow-auto whitespace-pre-wrap">${answers.C || '<span class="text-slate-600 italic">Sin responder aún...</span>'}</pre>
+                </div>
+                <div class="p-3 bg-slate-950/50 rounded-lg border border-slate-850 md:col-span-2 space-y-1">
+                    <span class="text-[9px] font-mono text-red-400 font-bold block uppercase border-b border-slate-900 pb-1 mb-2 flex justify-between">
+                        <span>E - EVALUACIÓN (PRUEBA DE ESCRITORIO)</span>
+                        <i data-lucide="check-square" class="w-3.5 h-3.5"></i>
+                    </span>
+                    <p class="text-xs text-slate-300 leading-relaxed font-sans min-h-[40px] whitespace-pre-wrap">${answers.E2 || '<span class="text-slate-600 italic">Sin responder aún...</span>'}</p>
+                </div>
+            `;
+
+            // Action row setup to copy student summary
+            actionRow.innerHTML = `
+                <button onclick="copyMonitoredReport()" class="py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition">
+                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                    Copiar Reporte Completo del Alumno
+                </button>
+            `;
+            lucide.createIcons();
+        };
+
+        const copyMonitoredReport = () => {
+            if (!selectedMonitoredStudentId) return;
+            const student = syncedStudentsMap[selectedMonitoredStudentId];
+            if (!student) return;
+
+            let report = `========================================================\n`;
+            report += `REPORTE CONSOLIDADO DE ALUMNO: ${student.name.toUpperCase()}\n`;
+            report += `ID: ${selectedMonitoredStudentId}\n`;
+            report += `========================================================\n\n`;
+
+            for(let cId = 1; cId <= 3; cId++) {
+                const ans = student.answers[cId] || { P: "", O: "", E: "", C: "", E2: "" };
+                report += `[DESAFÍO ${cId}]\n`;
+                report += `P: ${ans.P || "Sin respuesta"}\n`;
+                report += `O: ${ans.O || "Sin respuesta"}\n`;
+                report += `E: ${ans.E || "Sin respuesta"}\n`;
+                report += `C:\n${ans.C || "Sin respuesta"}\n`;
+                report += `E2: ${ans.E2 || "Sin respuesta"}\n`;
+                report += `--------------------------------------------------------\n\n`;
+            }
+
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = report;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+
+            showNotification("success", "¡Reporte consolidado del alumno copiado al portapapeles!");
+        };
+
+        // Utility interactive notification bubble
+        const showNotification = (type, message) => {
+            const notif = document.createElement('div');
+            const bgClass = type === 'error' ? 'bg-red-950 border-red-500/30 text-red-200' : 'bg-slate-900 border-slate-700 text-slate-200';
+            const icon = type === 'error' ? 'alert-triangle' : (type === 'info' ? 'cloud' : 'check-circle-2');
+            const iconColor = type === 'error' ? 'text-red-400' : (type === 'info' ? 'text-indigo-400' : 'text-emerald-400');
+
+            notif.className = `fixed bottom-5 right-5 ${bgClass} border px-4 py-3 rounded-xl shadow-2xl z-50 flex items-center gap-2 text-xs md:text-sm animate-bounce`;
+            notif.innerHTML = `<i class="${iconColor}" data-lucide="${icon}"></i> ${message}`;
+            
+            document.body.appendChild(notif);
+            lucide.createIcons();
+            
+            setTimeout(() => { notif.remove(); }, 2500);
+        };
+
+        // Global Module API bindings to raw window context so inline buttons don't throw ReferenceErrors
+        window.toggleRole = toggleRole;
+        window.checkTeacherAuth = checkTeacherAuth;
+        window.setPoeceStep = setPoeceStep;
+        window.selectChallenge = selectChallenge;
+        window.setStudentTab = setStudentTab;
+        window.updateReportName = updateReportName;
+        window.downloadReport = downloadReport;
+        window.clearSimTerminal = clearSimTerminal;
+        window.runLocalSimulation = runLocalSimulation;
+        window.resetSavingsSim = resetSavingsSim;
+        window.depositAhorroSim = depositAhorroSim;
+        window.selectTeacherSol = selectTeacherSol;
+        window.copySolCode = copySolCode;
+        window.saveStudentWork = saveStudentWork;
+        window.saveProgressToCloud = saveProgressToCloud;
+        window.setTeacherTab = setTeacherTab;
+        window.selectMonitoredChallenge = selectMonitoredChallenge;
+        window.loadSelectedStudentDetails = loadSelectedStudentDetails;
+        window.copyMonitoredReport = copyMonitoredReport;
+
+        // Initialize Firebase
+        initFirebase();
+
+    </script>
+</body>
+</html>
