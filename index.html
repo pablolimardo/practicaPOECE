@@ -60,7 +60,7 @@
                     <h1 class="text-lg font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
                         POECE Lab <span class="text-xs text-slate-500 font-normal">v1.3</span>
                     </h1>
-                    <p class="text-xs text-slate-400">Algoritmos y Programación — 3° 1° (Grupo A2)</p>
+                    <p class="text-xs text-slate-400">Programación</p>
                 </div>
             </div>
 
@@ -200,8 +200,8 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-                        <div class="md:col-span-5 bg-slate-900/80 border border-slate-800 rounded-xl p-4 flex flex-col justify-between space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 flex flex-col justify-between space-y-4">
                             <div class="space-y-3">
                                 <span class="text-[10px] font-mono text-emerald-400 tracking-wider font-bold uppercase block flex items-center gap-1">
                                     <i data-lucide="play-circle" class="w-3.5 h-3.5"></i>
@@ -216,7 +216,7 @@
                             </button>
                         </div>
 
-                        <div class="md:col-span-7 bg-black rounded-xl border border-slate-850 p-3.5 flex flex-col justify-between h-56">
+                        <div class="bg-black rounded-xl border border-slate-850 p-3.5 flex flex-col justify-between h-56">
                             <div class="flex items-center justify-between border-b border-slate-900 pb-2 mb-2">
                                 <span class="text-[9px] font-mono text-slate-500">TERMINAL OUTPUT (MOCKUP)</span>
                                 <button onclick="clearSimTerminal()" class="text-[9px] font-mono text-slate-600 hover:text-slate-400 transition flex items-center gap-1">
@@ -232,6 +232,7 @@
 
             </div>
 
+            <!-- STUDENT TAB 2: MI REPORTE -->
             <div id="student-reporte-content" class="hidden glass-card rounded-2xl p-6 space-y-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
                     <div class="space-y-1">
@@ -267,8 +268,10 @@
 
         </section>
 
+        <!-- Teacher Area (Hidden by default, password locked) -->
         <section id="teacher-workspace" class="hidden space-y-6">
             
+            <!-- Auth Lock Card (No Demo option as requested) -->
             <div id="teacher-auth-card" class="max-w-md mx-auto glass-card rounded-2xl p-6 space-y-4 text-center border-t-2 border-t-indigo-500">
                 <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-full w-12 h-12 mx-auto flex items-center justify-center">
                     <i data-lucide="shield-check" class="w-6 h-6"></i>
@@ -279,9 +282,9 @@
                 </div>
 
                 <div class="space-y-3">
-                    <input type="password" id="teacher-pass" placeholder="Contraseña de Profesor" class="w-full text-center bg-slate-950 border border-slate-800 rounded-xl py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 font-mono" onkeydown="if(event.key === 'Enter') checkTeacherAuth()">
+                    <input type="password" id="teacher-pass" placeholder="Contraseña de Profesor" class="w-full text-center bg-slate-950 border border-slate-800 rounded-xl py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 font-mono" onkeydown="if(event.key === 'Enter') checkTeacherAuth()"  autocomplete="current-password">
                     <button onclick="checkTeacherAuth()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition font-sans">Desbloquear Panel</button>
-                    <p class="text-[9px] font-mono text-slate-600">Tip de clase: La clave del taller es <code class="bg-slate-950 px-1 py-0.5 rounded text-indigo-400 font-bold">PROFE-A2</code></p>
+                    <p class="text-[9px] font-mono text-slate-600">Contactá al profesor si olvidaste la clave de acceso.</p>
                 </div>
             </div>
 
@@ -350,7 +353,7 @@
                                 <p class="text-[11px] text-slate-600 italic text-center py-8">Esperando respuestas de los alumnos...</p>
                             </div>
                         </div>
-                        <div class="pt-3 border-t border-slate-800/80 flex items-center gap-1.5 text-[9px] text-slate-500 font-mono">
+                        <div class="pt-3 border-t border-slate-800 flex items-center gap-1.5 text-[9px] text-slate-500 font-mono">
                             <i data-lucide="info" class="w-3.5 h-3.5"></i>
                             Hacé click en un alumno de la lista para inspeccionar sus respuestas del método POECE.
                         </div>
@@ -390,7 +393,7 @@
     <footer class="border-t border-slate-900 bg-[#04050a] py-6 px-6 text-center text-[10px] text-slate-600 mt-12">
         <div class="max-w-7xl mx-auto space-y-1">
             <p class="font-semibold text-slate-500">Escuela Industrial N° 9 — El Calafate, Santa Cruz, Argentina</p>
-            <p>Laboratorio Didáctico de Algoritmos y Programación 3° 1° — Prof. Pablo Limardo</p>
+            <p>ACPI —2026— Prof. Pablo Limardo</p>
         </div>
     </footer>
 
@@ -400,7 +403,11 @@
         import { getFirestore, collection, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // -------------------------------------------------------------------------
-        // CONFIGURACIÓN DE TU PROPIA BASE DE DATOS DE FIREBASE (Para GitHub Pages)
+        // CONFIGURACIÓN FIREBASE — esta API Key es pública por diseño en Firebase.
+        // La seguridad real está en las Reglas de Firestore (consola Firebase).
+        // IMPORTANTE: restringí la key en console.cloud.google.com →
+        //   APIs & Services → Credentials → tu key → "Referrers HTTP" →
+        //   agregá solo tu dominio (ej: tuusuario.github.io/*)
         // -------------------------------------------------------------------------
         const miConfiguracionFirebase = {
             apiKey: "AIzaSyB3oeQ47QKMQxyCH8QCJi3vq5gDCb6u3l0",
@@ -412,7 +419,7 @@
         };
         // -------------------------------------------------------------------------
 
-        // Base de Datos de los Desafíos para los Estudiantes
+        // Base de Datos de los Desafíos para los Estudiantes - Solución definitiva usando escape estándar de template strings (\$) para no romper la compilación JS
         const challenges = {
             1: {
                 title: "1. Validador de Notas con Alerta",
@@ -474,7 +481,7 @@ else:
             },
             2: {
                 title: "2. La Alcancía Digital",
-                enunciado: `Queremos diseñar un simulador de ahorro interactivo. El usuario va a ingresar una <strong>meta de ahorro</strong> en pesos (por ejemplo, $5000).<br><br>A partir de ahí, el programa le tiene que pedir de forma repetitiva que ingrese los montos que va ahorrando mes a mes. El programa tiene que dejar de pedir datos únicamente cuando la suma de los ahorros alcance o supere la meta establecida. Al final, debe mostrar cuántos meses tardó en juntar la plata y con cuánto saldo a favor quedó.`,
+                enunciado: `Queremos diseñar un simulador de ahorro interactivo. El usuario va a ingresar una <strong>meta de ahorro</strong> en pesos (por ejemplo, \$5000).<br><br>A partir de ahí, el programa le tiene que pedir de forma repetitiva que ingrese los montos que va ahorrando mes a mes. El programa tiene que dejar de pedir datos únicamente cuando la suma de los ahorros alcance o supere la meta establecida. Al final, debe mostrar cuántos meses tardó en juntar la plata y con cuánto saldo a favor quedó.`,
                 poeceGuide: {
                     P: {
                         title: "1. Problema (Análisis inicial)",
@@ -482,7 +489,7 @@ else:
                     },
                     O: {
                         title: "2. Objetivo",
-                        desc: "Escribí el objetivo. Lograr que el programa pida montos repetidamente hasta cruzar la meta establecida."
+                        desc: "Escribí el objetivo. Lograr que el programa pida montos repetidamente hasta que cruce la meta."
                     },
                     E: {
                         title: "3. Estrategia (Algoritmo)",
@@ -494,12 +501,12 @@ else:
                     },
                     E2: {
                         title: "5. Evaluación (Prueba de Escritorio)",
-                        desc: "Si la meta es de $1000, ingresamos $300, luego $500 y finalmente $400. ¿Cuántos meses tardó y cuánto sobró?"
+                        desc: "Si la meta es de \$1000, ingresamos \$300, luego \$500 y finalmente \$400. ¿Cuántos meses tardó y cuánto sobró?"
                     }
                 },
                 inputsHTML: `
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">Establecer Meta de Ahorro ($)</label>
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">Establecer Meta de Ahorro (\$)</label>
                         <input type="number" id="sim-c2-meta" value="1000" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-mono" onchange="resetSavingsSim()">
                     </div>
                     <div class="h-px bg-slate-800 my-2"></div>
@@ -529,7 +536,7 @@ while total_ahorrado < meta:
 # Excedente o vuelto final
 saldo_favor = total_ahorrado - meta
 print("\\\\n¡Excelente! Cumpliste con tu meta.")
-print(f"Tardaste {meses} meses en juntar el dinero.")
+print(f"Tardaste {meses} meses in juntar el dinero.")
 print(f"Te sobraron: \${saldo_favor:.2f}")`
             },
             3: {
@@ -678,15 +685,23 @@ print("------------------------------------")`
                     auth = getAuth(app);
                     db = getFirestore(app);
 
+                    // Autenticación asincrónica obligatoria previa a cualquier llamada (RULE 3)
+                    let user = null;
                     if (initialAuthToken && !miConfiguracionFirebase) {
-                        await signInWithCustomToken(auth, initialAuthToken);
+                        const userCredential = await signInWithCustomToken(auth, initialAuthToken);
+                        user = userCredential.user;
                     } else {
-                        await signInAnonymously(auth);
+                        const userCredential = await signInAnonymously(auth);
+                        user = userCredential.user;
                     }
 
-                    isFirebaseConnected = true;
-                    updateSyncBadge(true);
-                    setupRealTimeListeners();
+                    if (user) {
+                        isFirebaseConnected = true;
+                        updateSyncBadge(true);
+                        setupRealTimeListeners(user);
+                    } else {
+                        useOfflineFallback();
+                    }
                 } catch (e) {
                     console.warn("Fallo de inicio de Firebase. Trabajando en modo local offline:", e);
                     useOfflineFallback();
@@ -702,7 +717,7 @@ print("------------------------------------")`
                 badge.className = "px-2.5 py-1 bg-emerald-950 border border-emerald-800 text-emerald-400 rounded-lg text-[10px] font-mono flex items-center gap-1.5";
                 badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> <span>Nube Sincronizada</span>`;
             } else {
-                badge.className = "px-2.5 py-1 bg-slate-900 border border-slate-800 text-slate-400 rounded-lg text-[10px] font-mono flex items-center gap-1.5";
+                badge.className = "px-2.5 py-1 bg-slate-900 border border-slate-850 text-slate-400 rounded-lg text-[10px] font-mono flex items-center gap-1.5";
                 badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> <span>Modo local</span>`;
             }
         };
@@ -715,9 +730,11 @@ print("------------------------------------")`
             renderStudentsList();
         };
 
-        const setupRealTimeListeners = () => {
-            if (!db || !isFirebaseConnected) return;
+        const setupRealTimeListeners = (user) => {
+            // Protección de operación segura (RULE 3)
+            if (!db || !isFirebaseConnected || !user) return;
 
+            // Ruta de acceso estricta para datos compartidos (RULE 1)
             const collectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'respuestas_alumnos');
             
             onSnapshot(collectionRef, (snapshot) => {
@@ -741,6 +758,13 @@ print("------------------------------------")`
                 }
             }, (error) => {
                 console.error("Error en Snapshot Firestore:", error);
+                if (error.code === 'permission-denied') {
+                    showNotification("error", "Error de Permisos de Firebase. Configura las Reglas en tu Consola.");
+                    addSimLog("⚠️ ERROR DE CONFIGURACIÓN EN FIREBASE:", "text-red-500 font-bold");
+                    addSimLog("Firestore rechazó la lectura. Tus reglas de seguridad impiden el acceso.", "text-red-400");
+                    addSimLog("Para solucionarlo, ve a tu Consola de Firebase -> Firestore Database -> pestaña Reglas y reemplaza todo el contenido por:", "text-slate-300");
+                    addSimLog("rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /{document=**} {\n      allow read, write: if request.auth != null;\n    }\n  }\n}", "text-emerald-400 font-bold");
+                }
             });
         };
 
@@ -776,8 +800,16 @@ print("------------------------------------")`
                 return;
             }
 
+            // Protección de operación segura (RULE 3)
+            const user = auth.currentUser;
+            if (!user) {
+                showNotification("error", "Error de autenticación. Intentando reconectar...");
+                return;
+            }
+
             try {
-                const uid = auth.currentUser ? auth.currentUser.uid : 'anonymous-session';
+                const uid = user.uid;
+                // Guardado estricto bajo el id de aplicación (RULE 1)
                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'respuestas_alumnos', uid);
                 
                 await setDoc(docRef, {
@@ -787,10 +819,15 @@ print("------------------------------------")`
                     timestamp: new Date().getTime()
                 }, { merge: true });
 
-                showNotification("success", "¡Progreso sincronizado! Tu profesor ya puede ver tus respuestas en vivo.");
+                showNotification("success", "¡Progreso Sincronizado correctamente!");
             } catch (err) {
                 console.error("Error guardando en Firestore:", err);
-                showNotification("error", "No se pudo sincronizar en el servidor. Descargá tu reporte físico.");
+                if (err.code === 'permission-denied') {
+                    showNotification("error", "Error de permisos al guardar. Verificá las reglas de tu Firestore Database.");
+                    addSimLog("⚠️ ERROR AL GUARDAR: Firestore rechazó la escritura por falta de permisos en tu consola.", "text-red-500 font-bold");
+                } else {
+                    showNotification("error", "No se pudo sincronizar en el servidor. Descargá tu reporte físico.");
+                }
             }
         };
 
@@ -1100,16 +1137,28 @@ print("------------------------------------")`
             lucide.createIcons();
         };
 
-        const checkTeacherAuth = () => {
+        const hashPassword = async (text) => {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(text);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        };
+
+        // SHA-256 de "PROFE-A2"
+        const TEACHER_PASS_HASH = "671d13832710bb7a88d0608deaca7978c3fc31ced971f16b1da3d9aea8c695a1";
+
+        const checkTeacherAuth = async () => {
             const pass = document.getElementById('teacher-pass').value.trim();
-            if (pass === "PROFE-A2") {
+            const hash = await hashPassword(pass);
+            if (hash === TEACHER_PASS_HASH) {
                 isTeacherUnlocked = true;
                 document.getElementById('teacher-auth-card').classList.add('hidden');
                 document.getElementById('teacher-content-panel').classList.remove('hidden');
                 selectTeacherSol(1);
                 renderStudentsList();
             } else {
-                alert("Contraseña incorrecta. Probá con PROFE-A2.");
+                alert("Contraseña incorrecta.");
             }
         };
 
@@ -1135,7 +1184,7 @@ print("------------------------------------")`
             document.body.appendChild(dummy);
             dummy.value = code;
             dummy.select();
-            document.execCommand("copy");
+            document.execCommand('copy');
             document.body.removeChild(dummy);
 
             showNotification("success", "Solución copiada al portapapeles.");
@@ -1265,7 +1314,7 @@ print("------------------------------------")`
             `;
 
             actionRow.innerHTML = `
-                <button onclick="copyMonitoredReport()" class="py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition">
+                <button onclick="copyMonitoredReport()" class="py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition font-sans">
                     <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                     Copiar Reporte Completo del Alumno
                 </button>
@@ -1298,7 +1347,7 @@ print("------------------------------------")`
             document.body.appendChild(dummy);
             dummy.value = report;
             dummy.select();
-            document.execCommand("copy");
+            document.execCommand('copy');
             document.body.removeChild(dummy);
 
             showNotification("success", "¡Reporte consolidado del alumno copiado al portapapeles!");
@@ -1339,6 +1388,10 @@ print("------------------------------------")`
         window.loadSelectedStudentDetails = loadSelectedStudentDetails;
         window.copyMonitoredReport = copyMonitoredReport;
 
+        // Inicializamos los desafíos localmente primero
+        selectChallenge(1);
+
+        // Inicializamos Firebase de forma asincrónica
         initFirebase();
 
     </script>
